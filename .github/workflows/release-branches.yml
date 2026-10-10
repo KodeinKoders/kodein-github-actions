@@ -1,0 +1,19 @@
+name: release branches
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+
+  release-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update the release branch
+        uses: KodeinKoders/kodein-github-actions/release-branches@main
+        with:
+          releaseName: ${{ github.event.release.name }}

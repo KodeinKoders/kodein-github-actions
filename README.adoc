@@ -44,7 +44,7 @@ It fails the job, with one annotation per problem, unless:
 [source,yaml]
 ----
 - uses: actions/checkout@v7
-- uses: KodeinKoders/kodein-github-actions/version-check@0.1.0
+- uses: KodeinKoders/kodein-github-actions/version-check@v0.1
   with:
     releaseName: ${{ github.event.release.name }}
 ----
@@ -72,7 +72,7 @@ The job needs the `contents: write` permission.
 permissions:
   contents: write
 steps:
-  - uses: KodeinKoders/kodein-github-actions/release-branches@0.1.0
+  - uses: KodeinKoders/kodein-github-actions/release-branches@v0.1
     with:
       releaseName: ${{ github.event.release.name }}
 ----
@@ -95,7 +95,7 @@ The Konan cache key depends on the runner's OS, on `gradle/libs.versions.toml` a
 
 [source,yaml]
 ----
-- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@0.1.0
+- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@v0.1
   with:
     java-version: '21'
 ----
@@ -133,8 +133,8 @@ A project without Gradle plugins therefore leaves the two `gradle-publish-*` inp
 
 [source,yaml]
 ----
-- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@0.1.0
-- uses: KodeinKoders/kodein-github-actions/publish@0.1.0
+- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@v0.1
+- uses: KodeinKoders/kodein-github-actions/publish@v0.1
   with:
     central-portal-token-username: ${{ secrets.CENTRAL_PORTAL_TOKEN_USERNAME }}
     central-portal-token-password: ${{ secrets.CENTRAL_PORTAL_TOKEN_PASSWORD }}
