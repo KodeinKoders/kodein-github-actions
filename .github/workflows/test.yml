@@ -35,5 +35,5 @@ jobs:
       - name: Check that the committed bundles are up to date
         run: |
           ./gradlew --stacktrace bundle
-          test -z "$(git status --porcelain -- '*/dist/*')" || { git diff -- '*/dist/*' | head -50; echo "::error::dist/ is stale: run ./gradlew bundle and commit the result"; exit 1; }
+          .github/scripts/check-dist.sh
         shell: bash
