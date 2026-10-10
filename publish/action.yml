@@ -1,0 +1,45 @@
+name: Publish
+description: Publishes the project to Maven Central and Gradle Portal
+inputs:
+  project:
+    description: The Gradle subproject to publish (defaults to '' which means root)
+    default: ''
+  central-portal-token-username:
+    description: The Maven Central Portal token username
+    required: true
+  central-portal-token-password:
+    description: The Maven Central Portal token password
+    required: true
+  pgp-signing-key:
+    description: The in-memory PGP key used to sign the publications
+    required: true
+  pgp-signing-password:
+    description: The password of the PGP signing key
+    required: true
+  gradle-publish-key:
+    description: The Gradle Portal key (Gradle plugins are published only when it and gradle-publish-secret are set)
+    default: ''
+  gradle-publish-secret:
+    description: The Gradle Portal secret (Gradle plugins are published only when it and gradle-publish-key are set)
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - name: Upload to Maven Central
+      if: ${{ inputs.central-portal-token-username != '' && inputs.central-portal-token-password != '' && inputs.pgp-signing-key != '' && inputs.pgp-signing-password != '' }}
+      env:
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ inputs.central-portal-token-username }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ inputs.central-portal-token-password }}
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ inputs.pgp-signing-key }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ inputs.pgp-signing-password }}
+      run: ./gradlew --stacktrace --scan -PRELEASE_SIGNING_ENABLED=true ${{ inputs.project }}:publishAndReleaseToMavenCentral
+      shell: bash
+    - name: Publish to Gradle Portal
+      if: ${{ inputs.pgp-signing-key != '' && inputs.pgp-signing-password != '' && inputs.gradle-publish-key != '' && inputs.gradle-publish-secret != '' }}
+      env:
+        GRADLE_PUBLISH_KEY: ${{ inputs.gradle-publish-key }}
+        GRADLE_PUBLISH_SECRET: ${{ inputs.gradle-publish-secret }}
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ inputs.pgp-signing-key }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ inputs.pgp-signing-password }}
+      run: ./gradlew --stacktrace --scan -PRELEASE_SIGNING_ENABLED=true ${{ inputs.project }}:publishPlugins
+      shell: bash
