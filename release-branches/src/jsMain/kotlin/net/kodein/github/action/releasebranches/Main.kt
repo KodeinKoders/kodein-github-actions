@@ -12,8 +12,9 @@ private suspend fun runAction() {
     val releaseName = getInput("releaseName", InputOptions(required = true))
     val commit = getInput("commit", InputOptions(required = true))
     val token = getInput("token", InputOptions(required = true))
+    val skipReleasePrefix = getInput("skip-release-prefix") == "true"
 
-    when (val outcome = updateReleaseBranch(releaseName, commit, OctokitBranches(token))) {
+    when (val outcome = updateReleaseBranch(releaseName, commit, OctokitBranches(token), skipReleasePrefix)) {
         Outcome.InvalidName ->
             setFailed("Release name \"$releaseName\" must be \"v{Major}.{Minor}.{Patch}\", optionally followed by \"-{Tag}\".")
         is Outcome.PreRelease ->

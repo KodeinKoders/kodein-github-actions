@@ -1,5 +1,5 @@
 name: Release branches
-description: Points the release/v{Major}.{Minor} branch at the commit of a release, creating it if needed.
+description: Points the release/v{Major}.{Minor} branch (or v{Major}.{Minor}, see skip-release-prefix) at the commit of a release, creating it if needed.
 inputs:
   releaseName:
     description: 'Name of the release being created, e.g. v3.5.2'
@@ -10,6 +10,9 @@ inputs:
   token:
     description: 'Token used to create and update the branch. It needs the contents: write permission.'
     default: ${{ github.token }}
+  skip-release-prefix:
+    description: 'Whether to omit the release/ prefix of the branch: v1.2 instead of release/v1.2'
+    default: 'false'
 runs:
   using: node24
   main: dist/index.mjs

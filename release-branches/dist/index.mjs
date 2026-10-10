@@ -45692,8 +45692,9 @@ protoOf($runActionCOROUTINE$).g4 = function () {
           var tmp_1 = this;
           tmp_1.xi_1 = getInput('commit', {required: true});
           var token = getInput('token', {required: true});
+          var skipReleasePrefix = getInput('skip-release-prefix') === 'true';
           this.y3_1 = 1;
-          suspendResult = updateReleaseBranch(this.yi_1, this.xi_1, new OctokitBranches(token), this);
+          suspendResult = updateReleaseBranch(this.yi_1, this.xi_1, new OctokitBranches(token), skipReleasePrefix, this);
           if (suspendResult === get_COROUTINE_SUSPENDED()) {
             return suspendResult;
           }
@@ -45991,17 +45992,19 @@ protoOf(Reset).equals = function (other) {
     return false;
   return true;
 };
-function updateReleaseBranch(releaseName, commit, branches, $completion) {
-  var tmp = new $updateReleaseBranchCOROUTINE$(releaseName, commit, branches, $completion);
+function updateReleaseBranch(releaseName, commit, branches, skipReleasePrefix, $completion) {
+  skipReleasePrefix = skipReleasePrefix === VOID ? false : skipReleasePrefix;
+  var tmp = new $updateReleaseBranchCOROUTINE$(releaseName, commit, branches, skipReleasePrefix, $completion);
   tmp.a4_1 = Unit_instance;
   tmp.b4_1 = null;
   return tmp.g4();
 }
-function $updateReleaseBranchCOROUTINE$(releaseName, commit, branches, resultContinuation) {
+function $updateReleaseBranchCOROUTINE$(releaseName, commit, branches, skipReleasePrefix, resultContinuation) {
   CoroutineImpl.call(this, resultContinuation);
   this.vk_1 = releaseName;
   this.wk_1 = commit;
   this.xk_1 = branches;
+  this.yk_1 = skipReleasePrefix;
 }
 protoOf($updateReleaseBranchCOROUTINE$).g4 = function () {
   var suspendResult = this.a4_1;
@@ -46020,16 +46023,17 @@ protoOf($updateReleaseBranchCOROUTINE$).g4 = function () {
           }
 
           var version = tmp_0;
-          var tmp1_safe_receiver = version.dl_1;
+          var tmp1_safe_receiver = version.el_1;
           if (tmp1_safe_receiver == null)
             null;
           else {
             return new PreRelease(tmp1_safe_receiver);
           }
 
-          this.zk_1 = 'release/v' + version.al_1 + '.' + version.bl_1;
+          var prefix = this.yk_1 ? '' : 'release/';
+          this.al_1 = prefix + 'v' + version.bl_1 + '.' + version.cl_1;
           this.y3_1 = 1;
-          suspendResult = this.xk_1.kk(this.zk_1, this);
+          suspendResult = this.xk_1.kk(this.al_1, this);
           if (suspendResult === get_COROUTINE_SUSPENDED()) {
             return suspendResult;
           }
@@ -46038,14 +46042,14 @@ protoOf($updateReleaseBranchCOROUTINE$).g4 = function () {
         case 1:
           if (suspendResult) {
             this.y3_1 = 3;
-            suspendResult = this.xk_1.mk(this.zk_1, this.wk_1, this);
+            suspendResult = this.xk_1.mk(this.al_1, this.wk_1, this);
             if (suspendResult === get_COROUTINE_SUSPENDED()) {
               return suspendResult;
             }
             continue $sm;
           } else {
             this.y3_1 = 2;
-            suspendResult = this.xk_1.lk(this.zk_1, this.wk_1, this);
+            suspendResult = this.xk_1.lk(this.al_1, this.wk_1, this);
             if (suspendResult === get_COROUTINE_SUSPENDED()) {
               return suspendResult;
             }
@@ -46053,15 +46057,15 @@ protoOf($updateReleaseBranchCOROUTINE$).g4 = function () {
           }
 
         case 2:
-          this.yk_1 = new Created(this.zk_1);
+          this.zk_1 = new Created(this.al_1);
           this.y3_1 = 4;
           continue $sm;
         case 3:
-          this.yk_1 = new Reset(this.zk_1);
+          this.zk_1 = new Reset(this.al_1);
           this.y3_1 = 4;
           continue $sm;
         case 4:
-          return this.yk_1;
+          return this.zk_1;
         case 5:
           throw this.b4_1;
       }
@@ -46082,19 +46086,19 @@ function get_releaseNameRegex() {
 }
 var releaseNameRegex;
 function ReleaseVersion(major, minor, patch, tag) {
-  this.al_1 = major;
-  this.bl_1 = minor;
-  this.cl_1 = patch;
-  this.dl_1 = tag;
+  this.bl_1 = major;
+  this.cl_1 = minor;
+  this.dl_1 = patch;
+  this.el_1 = tag;
 }
 protoOf(ReleaseVersion).toString = function () {
-  return 'ReleaseVersion(major=' + this.al_1 + ', minor=' + this.bl_1 + ', patch=' + this.cl_1 + ', tag=' + this.dl_1 + ')';
+  return 'ReleaseVersion(major=' + this.bl_1 + ', minor=' + this.cl_1 + ', patch=' + this.dl_1 + ', tag=' + this.el_1 + ')';
 };
 protoOf(ReleaseVersion).hashCode = function () {
-  var result = getStringHashCode(this.al_1);
-  result = kodein_github_actions_release_branches_imul(result, 31) + getStringHashCode(this.bl_1) | 0;
+  var result = getStringHashCode(this.bl_1);
   result = kodein_github_actions_release_branches_imul(result, 31) + getStringHashCode(this.cl_1) | 0;
-  result = kodein_github_actions_release_branches_imul(result, 31) + (this.dl_1 == null ? 0 : getStringHashCode(this.dl_1)) | 0;
+  result = kodein_github_actions_release_branches_imul(result, 31) + getStringHashCode(this.dl_1) | 0;
+  result = kodein_github_actions_release_branches_imul(result, 31) + (this.el_1 == null ? 0 : getStringHashCode(this.el_1)) | 0;
   return result;
 };
 protoOf(ReleaseVersion).equals = function (other) {
@@ -46102,13 +46106,13 @@ protoOf(ReleaseVersion).equals = function (other) {
     return true;
   if (!(other instanceof ReleaseVersion))
     return false;
-  if (!(this.al_1 === other.al_1))
-    return false;
   if (!(this.bl_1 === other.bl_1))
     return false;
   if (!(this.cl_1 === other.cl_1))
     return false;
-  if (!(this.dl_1 == other.dl_1))
+  if (!(this.dl_1 === other.dl_1))
+    return false;
+  if (!(this.el_1 == other.el_1))
     return false;
   return true;
 };

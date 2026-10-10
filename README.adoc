@@ -56,6 +56,7 @@ Rebuild it after any change to the module with `./gradlew :version-check:bundle`
 == release-branches
 
 Keeps a `release/v\{Major}.\{Minor}` branch on the commit of the latest release of that line.
+With the `skip-release-prefix` input set to `true`, the branch is `v\{Major}.\{Minor}`, without the `release/` prefix.
 For a release named `v\{Major}.\{Minor}.\{Patch}`:
 
 * if the branch does not exist, it is created at the release's commit;
@@ -79,6 +80,7 @@ steps:
 
 The `commit` input defaults to `github.sha`, which is the commit of the release's tag on a `release` event.
 The `token` input defaults to `github.token`.
+The `skip-release-prefix` input defaults to `false`: for release `v1.2.3`, the branch is `release/v1.2`, or `v1.2` when it is `true`.
 
 
 == gradle-kotlin-setup

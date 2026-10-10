@@ -17,3 +17,4 @@ jobs:
         uses: KodeinKoders/kodein-github-actions/release-branches@main
         with:
           releaseName: ${{ github.event.release.name }}
+          skip-release-prefix: true

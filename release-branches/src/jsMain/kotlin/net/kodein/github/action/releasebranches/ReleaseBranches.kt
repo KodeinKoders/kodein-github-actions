@@ -14,13 +14,22 @@ internal sealed interface Outcome {
     data class Reset(val branch: String) : Outcome
 }
 
-/** Points `release/v{Major}.{Minor}` at [commit] for a final release, creating the branch if need be. */
-internal suspend fun updateReleaseBranch(releaseName: String, commit: String, branches: Branches): Outcome {
+/**
+ * Points `release/v{Major}.{Minor}` at [commit] for a final release, creating the branch if need be.
+ * The branch is `v{Major}.{Minor}` when [skipReleasePrefix] is set.
+ */
+internal suspend fun updateReleaseBranch(
+    releaseName: String,
+    commit: String,
+    branches: Branches,
+    skipReleasePrefix: Boolean = false,
+): Outcome {
     val version = parseReleaseName(releaseName) ?: return Outcome.InvalidName
     // A pre-release is not the branch's release line yet.
     version.tag?.let { return Outcome.PreRelease(it) }
 
-    val branch = "release/v${version.major}.${version.minor}"
+    val prefix = if (skipReleasePrefix) "" else "release/"
+    val branch = "${prefix}v${version.major}.${version.minor}"
     return if (branches.exists(branch)) {
         branches.reset(branch, commit)
         Outcome.Reset(branch)

@@ -49,4 +49,18 @@ class ReleaseBranchesTest {
         assertEquals(Outcome.Created("release/v1.12"), updateReleaseBranch("v1.12.0", "abc", branches))
         assertEquals(listOf("exists release/v1.12", "create release/v1.12 abc"), branches.calls)
     }
+
+    @Test
+    fun releasePrefixCanBeSkipped() = runTest {
+        val branches = FakeBranches()
+        assertEquals(Outcome.Created("v1.2"), updateReleaseBranch("v1.2.3", "abc", branches, skipReleasePrefix = true))
+        assertEquals(listOf("exists v1.2", "create v1.2 abc"), branches.calls)
+    }
+
+    @Test
+    fun existingBranchWithoutPrefixIsReset() = runTest {
+        val branches = FakeBranches(existing = setOf("v1.2"))
+        assertEquals(Outcome.Reset("v1.2"), updateReleaseBranch("v1.2.4", "def", branches, skipReleasePrefix = true))
+        assertEquals(listOf("exists v1.2", "reset v1.2 def"), branches.calls)
+    }
 }
