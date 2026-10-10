@@ -12,6 +12,8 @@ Each action is its own module and compiles to a single JS library file:
 * `release-branches`
 * `version-check`
 
+Refer to an action by a release tag, such as `0.1.0`, and not by the `main` branch: a workflow then keeps running the same code until you choose to upgrade it.
+
 == version-check
 
 Checks that the release being created, the Gradle version and the Antora documentation agree.
@@ -25,7 +27,7 @@ It fails the job, with one annotation per problem, unless:
 [source,yaml]
 ----
 - uses: actions/checkout@v7
-- uses: KodeinKoders/kodein-github-actions/version-check@main
+- uses: KodeinKoders/kodein-github-actions/version-check@0.1.0
   with:
     releaseName: ${{ github.event.release.name }}
 ----
@@ -52,7 +54,7 @@ The job needs the `contents: write` permission.
 permissions:
   contents: write
 steps:
-  - uses: KodeinKoders/kodein-github-actions/release-branches@main
+  - uses: KodeinKoders/kodein-github-actions/release-branches@0.1.0
     with:
       releaseName: ${{ github.event.release.name }}
 ----
