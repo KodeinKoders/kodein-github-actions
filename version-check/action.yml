@@ -1,0 +1,9 @@
+name: Version check
+description: Checks that the release name, the Gradle version and the Antora documentation versions agree.
+inputs:
+  releaseName:
+    description: 'Name of the release being created, e.g. v3.5.2'
+    required: true
+runs:
+  using: node24
+  main: dist/index.mjs

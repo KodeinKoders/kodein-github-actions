@@ -1,0 +1,17 @@
+#!/bin/sh
+# Rebuilds the committed dist/ bundles of the actions, so a commit never ships a stale one.
+# Enabled once per clone with: git config core.hooksPath .githooks
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+# Only what goes into a bundle can make it stale. Without such a change there is nothing to rebuild.
+if ! git diff --cached --name-only | grep -Eq '(^|/)src/|(^|/)build\.gradle\.kts$|^settings\.gradle\.kts$|^gradle/libs\.versions\.toml$|^buildSrc/'; then
+    exit 0
+fi
+
+echo "pre-commit: rebuilding the bundles"
+./gradlew --quiet bundle
+
+# The bundles are built from the working tree, not from what is staged: with a partial commit, they include
+# the changes left out of it. Staging them keeps the commit consistent with what was built.
+git add -- '*/dist/*'

@@ -1,0 +1,73 @@
+= kodein-github-actions
+:toc: macro
+:toclevels: 2
+:idprefix:
+:source-highlighter: highlight.js
+
+*GitHub Actions for Kodein projects, written in Kotlin/JS.*
+
+kodein-github-actions is a Kotlin Multiplatform project that targets JavaScript only.
+Each action is its own module and compiles to a single JS library file:
+
+* `release-branches`
+* `version-check`
+
+== version-check
+
+Checks that the release being created, the Gradle version and the Antora documentation agree.
+It fails the job, with one annotation per problem, unless:
+
+* the release name is `v{Major}.{Minor}.{Patch}`, optionally followed by `-{Tag}`;
+* the root `build.gradle.kts` assigns `version` in its `allprojects` block, to the release name without its `v`;
+* no other `build.gradle.kts` assigns `version`;
+* when a `doc/` directory exists, `doc/antora.yml` exists, has no root `version` or `display_version`, and each `XXX-version` attribute equals the `XXX` version of `gradle/libs.versions.toml`.
+
+[source,yaml]
+----
+- uses: actions/checkout@v7
+- uses: KodeinKoders/kodein-github-actions/version-check@main
+  with:
+    releaseName: ${{ github.event.release.name }}
+----
+
+The action runs from `version-check/dist/`, which is committed.
+Rebuild it after any change to the module with `./gradlew :version-check:bundle`.
+
+== release-branches
+
+Keeps a `release/v{Major}.{Minor}` branch on the commit of the latest release of that line.
+For a release named `v{Major}.{Minor}.{Patch}`:
+
+* if the branch does not exist, it is created at the release's commit;
+* if it exists, it is hard reset to the release's commit.
+
+A release with a `-{Tag}` is a pre-release: nothing is done, and the action succeeds.
+A release name that is not `v{Major}.{Minor}.{Patch}`, optionally followed by `-{Tag}`, fails the action.
+
+The branch is updated through the GitHub API, so no checkout is needed.
+The job needs the `contents: write` permission.
+
+[source,yaml]
+----
+permissions:
+  contents: write
+steps:
+  - uses: KodeinKoders/kodein-github-actions/release-branches@main
+    with:
+      releaseName: ${{ github.event.release.name }}
+----
+
+The `commit` input defaults to `github.sha`, which is the commit of the release's tag on a `release` event.
+The `token` input defaults to `github.token`.
+
+== Development
+
+The actions run from their committed `dist/` directory, which `./gradlew bundle` builds.
+A git hook rebuilds and stages it when a commit touches what goes into a bundle; enable it once per clone:
+
+[source,sh]
+----
+git config core.hooksPath .githooks
+----
+
+CI fails if a committed `dist/` is stale, which also catches commits made with `--no-verify`.

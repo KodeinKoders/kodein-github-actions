@@ -1,0 +1,15 @@
+name: Release branches
+description: Points the release/v{Major}.{Minor} branch at the commit of a release, creating it if needed.
+inputs:
+  releaseName:
+    description: 'Name of the release being created, e.g. v3.5.2'
+    required: true
+  commit:
+    description: 'Commit the release branch must point to'
+    default: ${{ github.sha }}
+  token:
+    description: 'Token used to create and update the branch. It needs the contents: write permission.'
+    default: ${{ github.token }}
+runs:
+  using: node24
+  main: dist/index.mjs

@@ -1,0 +1,22 @@
+[versions]
+coroutines = "1.11.0"                             # https://github.com/Kotlin/kotlinx.coroutines/releases
+kotlin = "2.4.10"                                 # https://kotlinlang.org/docs/releases.html#release-history
+kotlinWrappers-actions-core = "2026.9.3-3.0.1"    # https://github.com/JetBrains/kotlin-wrappers/releases
+kotlinWrappers-actions-exec = "2026.9.3-3.0.0"    # https://github.com/JetBrains/kotlin-wrappers/releases
+kotlinWrappers-actions-github = "2026.9.3-9.1.1"  # https://github.com/JetBrains/kotlin-wrappers/releases
+kotlinWrappers-actions-io = "2026.9.3-3.0.2"      # https://github.com/JetBrains/kotlin-wrappers/releases
+kotlinWrappers-yaml = "2026.9.3-2.8.3"            # https://github.com/JetBrains/kotlin-wrappers/releases
+ncc = "0.45.0"                                    # https://github.com/vercel/ncc/releases
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlinWrappers-actions-core = { module = "org.jetbrains.kotlin-wrappers:kotlin-actions-core", version.ref = "kotlinWrappers-actions-core" }
+kotlinWrappers-actions-exec = { module = "org.jetbrains.kotlin-wrappers:kotlin-actions-exec", version.ref = "kotlinWrappers-actions-exec" }
+kotlinWrappers-actions-github = { module = "org.jetbrains.kotlin-wrappers:kotlin-actions-github", version.ref = "kotlinWrappers-actions-github" }
+kotlinWrappers-actions-io = { module = "org.jetbrains.kotlin-wrappers:kotlin-actions-io", version.ref = "kotlinWrappers-actions-io" }
+kotlinWrappers-yaml = { module = "org.jetbrains.kotlin-wrappers:kotlin-yaml", version.ref = "kotlinWrappers-yaml" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
