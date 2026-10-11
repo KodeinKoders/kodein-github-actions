@@ -40131,14 +40131,14 @@ initMetadataForClass(ListIteratorImpl, 'ListIteratorImpl', VOID, IteratorImpl);
 initMetadataForClass(AbstractMutableList, 'AbstractMutableList', VOID, AbstractMutableCollection, [KtList, Collection]);
 initMetadataForClass(AbstractMap, 'AbstractMap', VOID, VOID, [KtMap]);
 initMetadataForClass(AbstractMutableMap, 'AbstractMutableMap', VOID, AbstractMap, [KtMap]);
-initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [Collection, KtSet]);
+initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [KtSet, Collection]);
 initMetadataForCompanion(Companion_2);
 initMetadataForInterface(RandomAccess, 'RandomAccess');
 initMetadataForClass(ArrayList, 'ArrayList', ArrayList_init_$Create$, AbstractMutableList, [KtList, Collection, RandomAccess]);
 initMetadataForClass(HashMap, 'HashMap', HashMap_init_$Create$, AbstractMutableMap, [KtMap]);
-initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [Collection, KtSet]);
+initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [KtSet, Collection]);
 initMetadataForClass(HashMapEntrySet, 'HashMapEntrySet', VOID, HashMapEntrySetBase);
-initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [Collection, KtSet]);
+initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [KtSet, Collection]);
 initMetadataForCompanion(Companion_3);
 initMetadataForClass(Itr, 'Itr');
 initMetadataForClass(KeysItr, 'KeysItr', VOID, Itr);
@@ -40182,7 +40182,7 @@ function containsAllEntries(m) {
 initMetadataForInterface(InternalMap, 'InternalMap');
 initMetadataForClass(InternalHashMap, 'InternalHashMap', InternalHashMap_init_$Create$, VOID, [InternalMap]);
 initMetadataForClass(LinkedHashMap, 'LinkedHashMap', LinkedHashMap_init_$Create$, HashMap, [KtMap]);
-initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [Collection, KtSet]);
+initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [KtSet, Collection]);
 initMetadataForClass(Exception, 'Exception', Exception_init_$Create$, Error);
 initMetadataForClass(RuntimeException, 'RuntimeException', RuntimeException_init_$Create$, Exception);
 initMetadataForClass(UnsupportedOperationException, 'UnsupportedOperationException', UnsupportedOperationException_init_$Create$, RuntimeException);
@@ -44987,7 +44987,7 @@ function checkRootBuild(text, expectedVersion) {
   if (assignment.l9_1 == null) {
     this_0.e(new Problem('"version = ' + assignment.m9_1 + '" must be a plain string literal, to be checked.', 'build.gradle.kts', assignment.k9_1));
   } else if (!(expectedVersion == null) && !(assignment.l9_1 == expectedVersion)) {
-    this_0.e(new Problem('Version is "' + assignment.l9_1 + '" in build.gradle.kts, so the release must be named "v' + assignment.l9_1 + '".', 'build.gradle.kts', assignment.k9_1));
+    this_0.e(new Problem('Version is "' + assignment.l9_1 + '" in build.gradle.kts, so the release must be named "' + assignment.l9_1 + '".', 'build.gradle.kts', assignment.k9_1));
   }
   return this_0.a3();
 }
@@ -45300,7 +45300,7 @@ function run() {
     // Inline function 'actions.core.InputOptions.Companion.invoke' call
     // Inline function 'actions.core.actions_core_InputOptions_Companion_1b5u4w_invoke_jkqnwo' call
     var tmp$ret$0 = {required: true};
-    var problems = checkAll(getInput('releaseName', tmp$ret$0));
+    var problems = checkAll(getInput('releaseName', tmp$ret$0), getInput('tagName'));
     var _iterator__ex2g4s = problems.f();
     while (_iterator__ex2g4s.g()) {
       var problem = _iterator__ex2g4s.h();
@@ -45323,13 +45323,15 @@ function run() {
     }
   }
 }
-function checkAll(releaseName) {
+function checkAll(releaseName, tagName) {
   // Inline function 'kotlin.collections.buildList' call
   // Inline function 'kotlin.collections.buildListInternal' call
   // Inline function 'kotlin.apply' call
   var this_0 = ArrayList_init_$Create$();
   info('Checking the release name');
   this_0.y1(checkReleaseName(releaseName));
+  info('Checking the tag name');
+  this_0.y1(checkTagName(tagName, releaseName));
   var version = parseReleaseVersion(releaseName);
   info('Checking build.gradle.kts');
   if (!kodein_github_actions_version_check_exists('build.gradle.kts')) {
@@ -45432,17 +45434,21 @@ function parseReleaseVersion(releaseName) {
 }
 function checkReleaseName(releaseName) {
   _init_properties_ReleaseName_kt__327log();
-  return !(parseReleaseVersion(releaseName) == null) ? emptyList() : listOf(new Problem('Release name "' + releaseName + '" must be "v{Major}.{Minor}.{Patch}", optionally followed by "-{Tag}".'));
+  return !(parseReleaseVersion(releaseName) == null) ? emptyList() : listOf(new Problem('Release name "' + releaseName + '" must be "{Major}.{Minor}.{Patch}", optionally followed by "-{Tag}".'));
 }
 function displayVersionOf(version) {
   _init_properties_ReleaseName_kt__327log();
   return joinToString_0(take(split(version, charArrayOf([_Char___init__impl__6a9atx(46)])), 2), '.');
 }
+function checkTagName(tagName, releaseName) {
+  _init_properties_ReleaseName_kt__327log();
+  return tagName === 'v' + releaseName ? emptyList() : listOf(new Problem('Tag name "' + tagName + '" must be "v' + releaseName + '", the release name prefixed by "v".'));
+}
 var properties_initialized_ReleaseName_kt_chgjha;
 function _init_properties_ReleaseName_kt__327log() {
   if (!properties_initialized_ReleaseName_kt_chgjha) {
     properties_initialized_ReleaseName_kt_chgjha = true;
-    releaseNameRegex = Regex_init_$Create$_0('^v((?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-[0-9A-Za-z_][0-9A-Za-z_.-]*)?)$');
+    releaseNameRegex = Regex_init_$Create$_0('^((?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-[0-9A-Za-z_][0-9A-Za-z_.-]*)?)$');
   }
 }
 function get_sectionRegex() {

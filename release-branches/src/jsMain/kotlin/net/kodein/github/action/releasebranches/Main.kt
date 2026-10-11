@@ -16,7 +16,7 @@ private suspend fun runAction() {
 
     when (val outcome = updateReleaseBranch(releaseName, commit, OctokitBranches(token), skipReleasePrefix)) {
         Outcome.InvalidName ->
-            setFailed("Release name \"$releaseName\" must be \"v{Major}.{Minor}.{Patch}\", optionally followed by \"-{Tag}\".")
+            setFailed("Release name \"$releaseName\" must be \"{Major}.{Minor}.{Patch}\", optionally followed by \"-{Tag}\".")
         is Outcome.PreRelease ->
             info("Release \"$releaseName\" has the tag \"${outcome.tag}\": release branches are not updated for pre-releases.")
         is Outcome.Created -> info("Created ${outcome.branch} at $commit.")

@@ -45703,7 +45703,7 @@ protoOf($runActionCOROUTINE$).g4 = function () {
         case 1:
           var outcome = suspendResult;
           if (equals(outcome, InvalidName_instance)) {
-            setFailed('Release name "' + this.yi_1 + '" must be "v{Major}.{Minor}.{Patch}", optionally followed by "-{Tag}".');
+            setFailed('Release name "' + this.yi_1 + '" must be "{Major}.{Minor}.{Patch}", optionally followed by "-{Tag}".');
           } else {
             if (outcome instanceof PreRelease) {
               info('Release "' + this.yi_1 + '" has the tag "' + outcome.mj_1 + '": release branches are not updated for pre-releases.');
@@ -46150,7 +46150,7 @@ var properties_initialized_ReleaseName_kt_chgjha;
 function _init_properties_ReleaseName_kt__327log() {
   if (!properties_initialized_ReleaseName_kt_chgjha) {
     properties_initialized_ReleaseName_kt_chgjha = true;
-    releaseNameRegex = Regex_init_$Create$('^v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-([0-9A-Za-z_][0-9A-Za-z_.-]*))?$');
+    releaseNameRegex = Regex_init_$Create$('^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-([0-9A-Za-z_][0-9A-Za-z_.-]*))?$');
   }
 }
 //region block: init

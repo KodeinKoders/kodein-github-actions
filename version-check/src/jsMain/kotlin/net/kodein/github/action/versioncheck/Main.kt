@@ -8,9 +8,11 @@ import actions.core.info
 import actions.core.setFailed
 
 
-private fun checkAll(releaseName: String): List<Problem> = buildList {
+private fun checkAll(releaseName: String, tagName: String): List<Problem> = buildList {
     info("Checking the release name")
     addAll(checkReleaseName(releaseName))
+    info("Checking the tag name")
+    addAll(checkTagName(tagName, releaseName))
     val version = parseReleaseVersion(releaseName)
 
     info("Checking $ROOT_BUILD")
@@ -36,7 +38,7 @@ private fun checkAll(releaseName: String): List<Problem> = buildList {
 @JsExport
 public fun run() {
     try {
-        val problems = checkAll(getInput("releaseName", InputOptions(required = true)))
+        val problems = checkAll(getInput("releaseName", InputOptions(required = true)), getInput("tagName"))
         for (problem in problems) {
             error(
                 problem.message,

@@ -1,9 +1,12 @@
 name: Version check
-description: Checks that the release name, the Gradle version and the Antora documentation versions agree.
+description: Checks that the release name, its tag, the Gradle version and the Antora documentation versions agree.
 inputs:
   releaseName:
-    description: 'Name of the release being created, e.g. v3.5.2'
+    description: 'Name of the release being created, e.g. 3.5.2'
     required: true
+  tagName:
+    description: 'Name of the tag of the release, which must be the release name prefixed by v, e.g. v3.5.2'
+    default: ${{ github.event.release.tag_name }}
 runs:
   using: node24
   main: dist/index.mjs

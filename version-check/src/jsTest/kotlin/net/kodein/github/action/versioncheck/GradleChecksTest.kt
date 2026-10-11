@@ -40,7 +40,7 @@ class GradleChecksTest {
         val problems = root("allprojects {\n    group = \"x\"\n    version = \"3.5.1\"\n}")
         assertEquals(1, problems.size)
         assertEquals(3, problems.single().line)
-        assertTrue("v3.5.1" in problems.single().message)
+        assertTrue("must be named \"3.5.1\"" in problems.single().message)
     }
 
     @Test

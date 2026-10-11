@@ -36,8 +36,9 @@ Two more actions are composite actions, written in YAML only, with nothing to bu
 Checks that the release being created, the Gradle version and the Antora documentation agree.
 It fails the job, with one annotation per problem, unless:
 
-* the release name is `v\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`;
-* the root `build.gradle.kts` assigns `version` in its `allprojects` block, to the release name without its `v`;
+* the release name is `\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`;
+* the tag of the release is the release name prefixed by `v`, such as `v1.2.3` for release `1.2.3`;
+* the root `build.gradle.kts` assigns `version` in its `allprojects` block, to the release name;
 * no other `build.gradle.kts` assigns `version`;
 * when `doc/antora.yml` exists:
 ** `version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
@@ -53,6 +54,8 @@ It fails the job, with one annotation per problem, unless:
     releaseName: ${{ github.event.release.name }}
 ----
 
+The `tagName` input defaults to `github.event.release.tag_name`, which is the tag of the release on a `release` event.
+
 The action runs from `version-check/dist/`, which is committed.
 Rebuild it after any change to the module with `./gradlew :version-check:bundle`.
 
@@ -61,13 +64,13 @@ Rebuild it after any change to the module with `./gradlew :version-check:bundle`
 
 Keeps a `release/v\{Major}.\{Minor}` branch on the commit of the latest release of that line.
 With the `skip-release-prefix` input set to `true`, the branch is `v\{Major}.\{Minor}`, without the `release/` prefix.
-For a release named `v\{Major}.\{Minor}.\{Patch}`:
+For a release named `\{Major}.\{Minor}.\{Patch}`:
 
 * if the branch does not exist, it is created at the release's commit;
 * if it exists, it is hard reset to the release's commit.
 
 A release with a `-\{Tag}` is a pre-release: nothing is done, and the action succeeds.
-A release name that is not `v\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`, fails the action.
+A release name that is not `\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`, fails the action.
 
 The branch is updated through the GitHub API, so no checkout is needed.
 The job needs the `contents: write` permission.
@@ -84,7 +87,7 @@ steps:
 
 The `commit` input defaults to `github.sha`, which is the commit of the release's tag on a `release` event.
 The `token` input defaults to `github.token`.
-The `skip-release-prefix` input defaults to `false`: for release `v1.2.3`, the branch is `release/v1.2`, or `v1.2` when it is `true`.
+The `skip-release-prefix` input defaults to `false`: for release `1.2.3`, the branch is `release/v1.2`, or `v1.2` when it is `true`.
 
 
 == gradle-kotlin-setup

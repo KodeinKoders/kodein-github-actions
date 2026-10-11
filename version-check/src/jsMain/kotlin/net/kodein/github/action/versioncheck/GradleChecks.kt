@@ -25,7 +25,7 @@ internal fun checkRootBuild(text: String, expectedVersion: String?): List<Proble
             assignment.value == null ->
                 add(Problem("\"version = ${assignment.expression}\" must be a plain string literal, to be checked.", ROOT_BUILD, assignment.line))
             expectedVersion != null && assignment.value != expectedVersion ->
-                add(Problem("Version is \"${assignment.value}\" in $ROOT_BUILD, so the release must be named \"v${assignment.value}\".", ROOT_BUILD, assignment.line))
+                add(Problem("Version is \"${assignment.value}\" in $ROOT_BUILD, so the release must be named \"${assignment.value}\".", ROOT_BUILD, assignment.line))
         }
     }
 }
