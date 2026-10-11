@@ -147,12 +147,13 @@ It runs the Gradle wrapper, so the repository must be checked out and a JDK inst
 * *Maven Central*: runs `publishAndReleaseToMavenCentral`, with signing enabled.
 * *Gradle Plugin Portal*: runs `publishPlugins`, with signing enabled.
 
-A step is skipped, and the action still succeeds, when one of its inputs is empty:
+A step is skipped when one of its inputs is empty:
 
-* the Maven Central step needs the four required inputs below;
+* the Maven Central step needs `central-portal-token-username`, `central-portal-token-password`, `pgp-signing-key` and `pgp-signing-password`;
 * the Gradle Plugin Portal step needs `pgp-signing-key`, `pgp-signing-password`, `gradle-publish-key` and `gradle-publish-secret`.
 
-A project without Gradle plugins therefore leaves the two `gradle-publish-*` inputs out.
+A project without Gradle plugins therefore leaves the two `gradle-publish-*` inputs out, and a project that only publishes plugins leaves the two `central-portal-token-*` inputs out.
+If both steps are skipped, nothing is published and the action fails.
 
 [source,yaml]
 ----
@@ -174,32 +175,32 @@ A composite action cannot read the `secrets` context, so the secrets are passed 
 | Input | Default | Description
 
 | `central-portal-token-username`
-| Required
-| The Maven Central Portal token username.
+| Empty
+| The Maven Central Portal token username, to publish to Maven Central.
 
 | `central-portal-token-password`
-| Required
-| The Maven Central Portal token password.
+| Empty
+| The Maven Central Portal token password, to publish to Maven Central.
 
 | `pgp-signing-key`
-| Required
-| The in-memory PGP key that signs the publications.
+| Empty
+| The in-memory PGP key that signs the publications, for both targets.
 
 | `pgp-signing-password`
-| Required
-| The password of the PGP signing key.
+| Empty
+| The password of the PGP signing key, for both targets.
 
 | `gradle-publish-key`
 | Empty
-| The Gradle Plugin Portal key.
+| The Gradle Plugin Portal key, to publish plugins.
 
 | `gradle-publish-secret`
 | Empty
-| The Gradle Plugin Portal secret.
+| The Gradle Plugin Portal secret, to publish plugins.
 
 | `project`
 | Empty
 | The Gradle subproject to publish; empty means the root project.
 |===
 
-GitHub does not enforce `required`: a missing input arrives empty, and the matching step is skipped.
+A missing input arrives empty, and the step that needs it is skipped.

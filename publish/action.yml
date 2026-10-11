@@ -5,17 +5,17 @@ inputs:
     description: The Gradle subproject to publish (defaults to '' which means root)
     default: ''
   central-portal-token-username:
-    description: The Maven Central Portal token username
-    required: true
+    description: The Maven Central Portal token username (Maven Central is published only when it, central-portal-token-password, pgp-signing-key and pgp-signing-password are set)
+    default: ''
   central-portal-token-password:
-    description: The Maven Central Portal token password
-    required: true
+    description: The Maven Central Portal token password (see central-portal-token-username)
+    default: ''
   pgp-signing-key:
-    description: The in-memory PGP key used to sign the publications
-    required: true
+    description: The in-memory PGP key used to sign the publications (needed by both Maven Central and the Gradle Portal)
+    default: ''
   pgp-signing-password:
-    description: The password of the PGP signing key
-    required: true
+    description: The password of the PGP signing key (needed by both Maven Central and the Gradle Portal)
+    default: ''
   gradle-publish-key:
     description: The Gradle Portal key (Gradle plugins are published only when it and gradle-publish-secret are set)
     default: ''
@@ -26,6 +26,7 @@ runs:
   using: "composite"
   steps:
     - name: Upload to Maven Central
+      id: maven-central
       if: ${{ inputs.central-portal-token-username != '' && inputs.central-portal-token-password != '' && inputs.pgp-signing-key != '' && inputs.pgp-signing-password != '' }}
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ inputs.central-portal-token-username }}
@@ -35,6 +36,7 @@ runs:
       run: ./gradlew --stacktrace --scan -PRELEASE_SIGNING_ENABLED=true ${{ inputs.project }}:publishAndReleaseToMavenCentral
       shell: bash
     - name: Publish to Gradle Portal
+      id: gradle-portal
       if: ${{ inputs.pgp-signing-key != '' && inputs.pgp-signing-password != '' && inputs.gradle-publish-key != '' && inputs.gradle-publish-secret != '' }}
       env:
         GRADLE_PUBLISH_KEY: ${{ inputs.gradle-publish-key }}
@@ -42,4 +44,10 @@ runs:
         ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ inputs.pgp-signing-key }}
         ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ inputs.pgp-signing-password }}
       run: ./gradlew --stacktrace --scan -PRELEASE_SIGNING_ENABLED=true ${{ inputs.project }}:publishPlugins
+      shell: bash
+    - name: Check that something was published
+      if: ${{ steps.maven-central.outcome == 'skipped' && steps.gradle-portal.outcome == 'skipped' }}
+      run: |
+        echo "::error::Nothing was published: set the inputs of at least one target. Maven Central needs central-portal-token-username, central-portal-token-password, pgp-signing-key and pgp-signing-password. Gradle Portal needs pgp-signing-key, pgp-signing-password, gradle-publish-key and gradle-publish-secret."
+        exit 1
       shell: bash
