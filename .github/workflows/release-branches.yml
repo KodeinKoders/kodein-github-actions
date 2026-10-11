@@ -1,4 +1,4 @@
-name: release branches
+name: release
 
 on:
   release:
@@ -10,11 +10,19 @@ permissions:
 
 jobs:
 
-  release-branches:
+  release:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out
+        uses: actions/checkout@v7
+      - name: Check the release
+        uses: KodeinKoders/kodein-github-actions/version-check@main
+        with:
+          release-name: ${{ github.event.release.name }}
+          # This project has no Gradle version: its actions are versioned by their release only.
+          check-gradle: false
       - name: Update the release branch
         uses: KodeinKoders/kodein-github-actions/release-branches@main
         with:
-          releaseName: ${{ github.event.release.name }}
+          release-name: ${{ github.event.release.name }}
           skip-release-prefix: true

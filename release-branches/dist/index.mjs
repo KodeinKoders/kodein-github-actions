@@ -45688,7 +45688,7 @@ protoOf($runActionCOROUTINE$).g4 = function () {
         case 0:
           this.z3_1 = 2;
           var tmp_0 = this;
-          tmp_0.yi_1 = getInput('releaseName', {required: true});
+          tmp_0.yi_1 = getInput('release-name', {required: true});
           var tmp_1 = this;
           tmp_1.xi_1 = getInput('commit', {required: true});
           var token = getInput('token', {required: true});

@@ -8,29 +8,33 @@ import actions.core.info
 import actions.core.setFailed
 
 
-private fun checkAll(releaseName: String, tagName: String): List<Problem> = buildList {
+private fun checkAll(releaseName: String, tagName: String, checkGradle: Boolean, gradleDirectory: String): List<Problem> = buildList {
     info("Checking the release name")
     addAll(checkReleaseName(releaseName))
     info("Checking the tag name")
     addAll(checkTagName(tagName, releaseName))
     val version = parseReleaseVersion(releaseName)
 
-    info("Checking $ROOT_BUILD")
-    if (!exists(ROOT_BUILD)) {
-        add(Problem("$ROOT_BUILD does not exist.", ROOT_BUILD))
-    } else {
-        addAll(checkRootBuild(readText(ROOT_BUILD), version))
-    }
+    if (checkGradle) {
+        val rootBuild = rootBuildPath(gradleDirectory)
+        info("Checking $rootBuild")
+        if (!exists(rootBuild)) {
+            add(Problem("$rootBuild does not exist.", rootBuild))
+        } else {
+            addAll(checkRootBuild(readText(rootBuild), version, rootBuild))
 
-    info("Checking that no other build.gradle.kts sets a version")
-    for (path in findOtherBuildScripts()) {
-        addAll(checkOtherBuild(path, readText(path)))
+            info("Checking that no other build.gradle.kts sets a version")
+            for (path in findOtherBuildScripts(rootBuild)) {
+                addAll(checkOtherBuild(path, readText(path), rootBuild))
+            }
+        }
     }
 
     if (exists(ANTORA_FILE)) {
         info("Checking $ANTORA_FILE")
-        val catalog = if (exists(VERSION_CATALOG)) parseCatalogVersions(readText(VERSION_CATALOG)) else emptyMap()
-        addAll(checkAntora(readText(ANTORA_FILE), catalog, version))
+        val catalogPath = versionCatalogPath(gradleDirectory)
+        val catalog = if (exists(catalogPath)) parseCatalogVersions(readText(catalogPath)) else emptyMap()
+        addAll(checkAntora(readText(ANTORA_FILE), catalog, version, catalogPath))
     }
 }
 
@@ -38,7 +42,12 @@ private fun checkAll(releaseName: String, tagName: String): List<Problem> = buil
 @JsExport
 public fun run() {
     try {
-        val problems = checkAll(getInput("releaseName", InputOptions(required = true)), getInput("tagName"))
+        val problems = checkAll(
+            releaseName = getInput("release-name", InputOptions(required = true)),
+            tagName = getInput("tag-name"),
+            checkGradle = getInput("check-gradle") == "true",
+            gradleDirectory = getInput("gradle-directory"),
+        )
         for (problem in problems) {
             error(
                 problem.message,

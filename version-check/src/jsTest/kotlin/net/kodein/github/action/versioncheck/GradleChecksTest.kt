@@ -112,4 +112,31 @@ class GradleChecksTest {
             libs.versions.kotlin.get()
         """.trimIndent()))
     }
+
+    @Test
+    fun problemsNameTheRootBuildInASubdirectory() {
+        val problems = checkRootBuild("allprojects {\n    version = \"3.5.1\"\n}", "3.5.2", "mockmp/build.gradle.kts")
+        assertEquals("mockmp/build.gradle.kts", problems.single().file)
+        assertTrue("in mockmp/build.gradle.kts" in problems.single().message)
+        assertEquals(
+            listOf(Problem("Only the root mockmp/build.gradle.kts may assign \"version\".", "mockmp/lib/build.gradle.kts", 1)),
+            checkOtherBuild("mockmp/lib/build.gradle.kts", "version = \"1.0\"", "mockmp/build.gradle.kts"),
+        )
+    }
+
+    @Test
+    fun rootBuildPaths() {
+        assertEquals("build.gradle.kts", rootBuildPath("."))
+        assertEquals("build.gradle.kts", rootBuildPath(""))
+        assertEquals("build.gradle.kts", rootBuildPath("./"))
+        assertEquals("mockmp/build.gradle.kts", rootBuildPath("mockmp"))
+        assertEquals("mockmp/build.gradle.kts", rootBuildPath("./mockmp/"))
+        assertEquals("a/b/build.gradle.kts", rootBuildPath("a/b"))
+    }
+
+    @Test
+    fun versionCatalogPaths() {
+        assertEquals("gradle/libs.versions.toml", versionCatalogPath("."))
+        assertEquals("mockmp/gradle/libs.versions.toml", versionCatalogPath("./mockmp/"))
+    }
 }

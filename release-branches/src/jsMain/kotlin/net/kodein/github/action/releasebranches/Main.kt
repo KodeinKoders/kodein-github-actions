@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 
 private suspend fun runAction() {
-    val releaseName = getInput("releaseName", InputOptions(required = true))
+    val releaseName = getInput("release-name", InputOptions(required = true))
     val commit = getInput("commit", InputOptions(required = true))
     val token = getInput("token", InputOptions(required = true))
     val skipReleasePrefix = getInput("skip-release-prefix") == "true"

@@ -38,23 +38,37 @@ It fails the job, with one annotation per problem, unless:
 
 * the release name is `\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`;
 * the tag of the release is the release name prefixed by `v`, such as `v1.2.3` for release `1.2.3`;
-* the root `build.gradle.kts` assigns `version` in its `allprojects` block, to the release name;
-* no other `build.gradle.kts` assigns `version`;
+* when the Gradle check is enabled, which it is unless `check-gradle` is `false`:
+** the root `build.gradle.kts` assigns `version` in its `allprojects` block, to the release name;
+** no other `build.gradle.kts` assigns `version`;
 * when `doc/antora.yml` exists:
 ** `version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
 ** `display_version` is that version without its patch and tag, `\{Major}.\{Minor}`, and is quoted so that YAML does not read `3.10` as the number `3.1`;
 ** the `version` attribute of `asciidoc.attributes` is the release's version;
-** each `XXX-version` attribute of `asciidoc.attributes` equals the `XXX` version of `gradle/libs.versions.toml`.
+** each `XXX-version` attribute of `asciidoc.attributes` equals the `XXX` version of the `gradle/libs.versions.toml` version catalog.
 
 [source,yaml]
 ----
 - uses: actions/checkout@v7
 - uses: KodeinKoders/kodein-github-actions/version-check@v0.1
   with:
-    releaseName: ${{ github.event.release.name }}
+    release-name: ${{ github.event.release.name }}
 ----
 
-The `tagName` input defaults to `github.event.release.tag_name`, which is the tag of the release on a `release` event.
+The `tag-name` input defaults to `github.event.release.tag_name`, which is the tag of the release on a `release` event.
+
+The Gradle build is expected at the root of the repository: its root `build.gradle.kts` and its `gradle/libs.versions.toml`.
+Set `gradle-directory` when the build lives in a subdirectory, as for a multi-build Gradle project.
+Both files are then read from that directory, as `<gradle-directory>/build.gradle.kts` and `<gradle-directory>/gradle/libs.versions.toml`, and only the `build.gradle.kts` files under it are checked for a `version`.
+The directory is also used when `check-gradle` is `false`, for the version catalog.
+
+[source,yaml]
+----
+- uses: KodeinKoders/kodein-github-actions/version-check@v0.1
+  with:
+    release-name: ${{ github.event.release.name }}
+    gradle-directory: mockmp
+----
 
 The action runs from `version-check/dist/`, which is committed.
 Rebuild it after any change to the module with `./gradlew :version-check:bundle`.
@@ -82,7 +96,7 @@ permissions:
 steps:
   - uses: KodeinKoders/kodein-github-actions/release-branches@v0.1
     with:
-      releaseName: ${{ github.event.release.name }}
+      release-name: ${{ github.event.release.name }}
 ----
 
 The `commit` input defaults to `github.sha`, which is the commit of the release's tag on a `release` event.

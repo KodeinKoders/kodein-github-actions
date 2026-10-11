@@ -23,9 +23,9 @@ private fun checkVersionProperty(name: String, value: dynamic, expected: String?
 
 /**
  * Checks `doc/antora.yml` against the release [version] (null if the release name is invalid, which is reported
- * elsewhere) and against the version [catalog].
+ * elsewhere) and against the version [catalog], which was read from [catalogPath] (only used in the problems).
  */
-internal fun checkAntora(text: String, catalog: Map<String, String?>, version: String?): List<Problem> {
+internal fun checkAntora(text: String, catalog: Map<String, String?>, version: String?, catalogPath: String = VERSION_CATALOG): List<Problem> {
     val root: dynamic = try {
         parse<JsAny?>(text).unsafeCast<dynamic>()
     } catch (e: Throwable) {
@@ -50,11 +50,11 @@ internal fun checkAntora(text: String, catalog: Map<String, String?>, version: S
             val actual = attributes[attribute].toString()
             when {
                 alias !in catalog ->
-                    add(Problem("Attribute \"$attribute\" has no \"$alias\" version in $VERSION_CATALOG.", ANTORA_FILE, line))
+                    add(Problem("Attribute \"$attribute\" has no \"$alias\" version in $catalogPath.", ANTORA_FILE, line))
                 catalog[alias] == null ->
-                    add(Problem("Version \"$alias\" in $VERSION_CATALOG is not a plain string, so \"$attribute\" cannot be checked.", ANTORA_FILE, line))
+                    add(Problem("Version \"$alias\" in $catalogPath is not a plain string, so \"$attribute\" cannot be checked.", ANTORA_FILE, line))
                 catalog[alias] != actual ->
-                    add(Problem("Attribute \"$attribute\" is \"$actual\" but \"$alias\" is \"${catalog[alias]}\" in $VERSION_CATALOG.", ANTORA_FILE, line))
+                    add(Problem("Attribute \"$attribute\" is \"$actual\" but \"$alias\" is \"${catalog[alias]}\" in $catalogPath.", ANTORA_FILE, line))
             }
         }
     }

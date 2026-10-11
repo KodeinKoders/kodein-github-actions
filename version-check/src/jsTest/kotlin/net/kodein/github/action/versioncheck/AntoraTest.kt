@@ -106,6 +106,13 @@ class AntoraTest {
     }
 
     @Test
+    fun problemsNameTheCatalogPath() {
+        val problems = checkAntora("$versions\nasciidoc:\n  attributes:\n    version: 3.5.2\n    foo-version: 1\n    kotlin-version: 2.4.0\n    guava-version: 33.0\n", catalog, "3.5.2", "mockmp/gradle/libs.versions.toml")
+        assertEquals(3, problems.size)
+        assertTrue(problems.all { "mockmp/gradle/libs.versions.toml" in it.message })
+    }
+
+    @Test
     fun invalidYaml() {
         assertEquals(1, checkAntora("a: [unclosed\n", catalog, "3.5.2").size)
     }

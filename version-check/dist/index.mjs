@@ -40131,14 +40131,14 @@ initMetadataForClass(ListIteratorImpl, 'ListIteratorImpl', VOID, IteratorImpl);
 initMetadataForClass(AbstractMutableList, 'AbstractMutableList', VOID, AbstractMutableCollection, [KtList, Collection]);
 initMetadataForClass(AbstractMap, 'AbstractMap', VOID, VOID, [KtMap]);
 initMetadataForClass(AbstractMutableMap, 'AbstractMutableMap', VOID, AbstractMap, [KtMap]);
-initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [KtSet, Collection]);
+initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [Collection, KtSet]);
 initMetadataForCompanion(Companion_2);
 initMetadataForInterface(RandomAccess, 'RandomAccess');
 initMetadataForClass(ArrayList, 'ArrayList', ArrayList_init_$Create$, AbstractMutableList, [KtList, Collection, RandomAccess]);
 initMetadataForClass(HashMap, 'HashMap', HashMap_init_$Create$, AbstractMutableMap, [KtMap]);
-initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [KtSet, Collection]);
+initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [Collection, KtSet]);
 initMetadataForClass(HashMapEntrySet, 'HashMapEntrySet', VOID, HashMapEntrySetBase);
-initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [KtSet, Collection]);
+initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [Collection, KtSet]);
 initMetadataForCompanion(Companion_3);
 initMetadataForClass(Itr, 'Itr');
 initMetadataForClass(KeysItr, 'KeysItr', VOID, Itr);
@@ -40182,7 +40182,7 @@ function containsAllEntries(m) {
 initMetadataForInterface(InternalMap, 'InternalMap');
 initMetadataForClass(InternalHashMap, 'InternalHashMap', InternalHashMap_init_$Create$, VOID, [InternalMap]);
 initMetadataForClass(LinkedHashMap, 'LinkedHashMap', LinkedHashMap_init_$Create$, HashMap, [KtMap]);
-initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [KtSet, Collection]);
+initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [Collection, KtSet]);
 initMetadataForClass(Exception, 'Exception', Exception_init_$Create$, Error);
 initMetadataForClass(RuntimeException, 'RuntimeException', RuntimeException_init_$Create$, Exception);
 initMetadataForClass(UnsupportedOperationException, 'UnsupportedOperationException', UnsupportedOperationException_init_$Create$, RuntimeException);
@@ -43346,6 +43346,11 @@ function substring(_this__u8e3s4, startIndex, endIndex) {
   // Inline function 'kotlin.js.asDynamic' call
   return _this__u8e3s4.substring(startIndex, endIndex);
 }
+function substring_0(_this__u8e3s4, startIndex) {
+  _init_properties_stringJs_kt__bg7zye();
+  // Inline function 'kotlin.js.asDynamic' call
+  return _this__u8e3s4.substring(startIndex);
+}
 function compareTo_0(_this__u8e3s4, other, ignoreCase) {
   ignoreCase = ignoreCase === VOID ? false : ignoreCase;
   _init_properties_stringJs_kt__bg7zye();
@@ -44315,6 +44320,34 @@ function contains_0(_this__u8e3s4, char, ignoreCase) {
   ignoreCase = ignoreCase === VOID ? false : ignoreCase;
   return indexOf_1(_this__u8e3s4, char, VOID, ignoreCase) >= 0;
 }
+function trimEnd(_this__u8e3s4, chars) {
+  // Inline function 'kotlin.text.trimEnd' call
+  var tmp0 = isCharSequence(_this__u8e3s4) ? _this__u8e3s4 : THROW_CCE();
+  var tmp$ret$1;
+  $l$block: {
+    // Inline function 'kotlin.text.trimEnd' call
+    var inductionVariable = charSequenceLength(tmp0) - 1 | 0;
+    if (0 <= inductionVariable)
+      do {
+        var index = inductionVariable;
+        inductionVariable = inductionVariable + -1 | 0;
+        var it = charSequenceGet(tmp0, index);
+        if (!contains(chars, it)) {
+          tmp$ret$1 = charSequenceSubSequence(tmp0, 0, index + 1 | 0);
+          break $l$block;
+        }
+      }
+       while (0 <= inductionVariable);
+    tmp$ret$1 = '';
+  }
+  return toString_1(tmp$ret$1);
+}
+function removePrefix(_this__u8e3s4, prefix) {
+  if (startsWith_2(_this__u8e3s4, prefix)) {
+    return substring_0(_this__u8e3s4, charSequenceLength(prefix));
+  }
+  return _this__u8e3s4;
+}
 function split(_this__u8e3s4, delimiters, ignoreCase, limit) {
   ignoreCase = ignoreCase === VOID ? false : ignoreCase;
   limit = limit === VOID ? 0 : limit;
@@ -44328,7 +44361,7 @@ function split(_this__u8e3s4, delimiters, ignoreCase, limit) {
   var _iterator__ex2g4s = this_0.f();
   while (_iterator__ex2g4s.g()) {
     var item = _iterator__ex2g4s.h();
-    var tmp$ret$2 = substring_0(_this__u8e3s4, item);
+    var tmp$ret$2 = substring_1(_this__u8e3s4, item);
     destination.e(tmp$ret$2);
   }
   return destination;
@@ -44369,28 +44402,6 @@ function startsWith_1(_this__u8e3s4, char, ignoreCase) {
 function endsWith_0(_this__u8e3s4, char, ignoreCase) {
   ignoreCase = ignoreCase === VOID ? false : ignoreCase;
   return charSequenceLength(_this__u8e3s4) > 0 && equals_0(charSequenceGet(_this__u8e3s4, get_lastIndex_0(_this__u8e3s4)), char, ignoreCase);
-}
-function trimEnd(_this__u8e3s4, chars) {
-  // Inline function 'kotlin.text.trimEnd' call
-  var tmp0 = isCharSequence(_this__u8e3s4) ? _this__u8e3s4 : THROW_CCE();
-  var tmp$ret$1;
-  $l$block: {
-    // Inline function 'kotlin.text.trimEnd' call
-    var inductionVariable = charSequenceLength(tmp0) - 1 | 0;
-    if (0 <= inductionVariable)
-      do {
-        var index = inductionVariable;
-        inductionVariable = inductionVariable + -1 | 0;
-        var it = charSequenceGet(tmp0, index);
-        if (!contains(chars, it)) {
-          tmp$ret$1 = charSequenceSubSequence(tmp0, 0, index + 1 | 0);
-          break $l$block;
-        }
-      }
-       while (0 <= inductionVariable);
-    tmp$ret$1 = '';
-  }
-  return toString_1(tmp$ret$1);
 }
 function trimStart(_this__u8e3s4, chars) {
   // Inline function 'kotlin.text.trimStart' call
@@ -44546,6 +44557,26 @@ function trimEnd_0(_this__u8e3s4) {
   }
   return tmp$ret$0;
 }
+function startsWith_2(_this__u8e3s4, prefix, ignoreCase) {
+  ignoreCase = ignoreCase === VOID ? false : ignoreCase;
+  var tmp;
+  var tmp_0;
+  if (!ignoreCase) {
+    tmp_0 = typeof _this__u8e3s4 === 'string';
+  } else {
+    tmp_0 = false;
+  }
+  if (tmp_0) {
+    tmp = typeof prefix === 'string';
+  } else {
+    tmp = false;
+  }
+  if (tmp)
+    return startsWith_0(_this__u8e3s4, prefix);
+  else {
+    return regionMatchesImpl(_this__u8e3s4, 0, prefix, 0, charSequenceLength(prefix), ignoreCase);
+  }
+}
 function split_0(_this__u8e3s4, delimiter, ignoreCase, limit) {
   requireNonNegativeLimit(limit);
   var currentOffset = 0;
@@ -44581,7 +44612,7 @@ function rangesDelimitedBy(_this__u8e3s4, delimiters, startIndex, ignoreCase, li
   requireNonNegativeLimit(limit);
   return new DelimitedRangesSequence(_this__u8e3s4, startIndex, limit, rangesDelimitedBy$lambda(delimiters, ignoreCase));
 }
-function substring_0(_this__u8e3s4, range) {
+function substring_1(_this__u8e3s4, range) {
   return toString_1(charSequenceSubSequence(_this__u8e3s4, range.x6(), range.w6() + 1 | 0));
 }
 function indexOf_3(_this__u8e3s4, other, startIndex, endIndex, ignoreCase, last) {
@@ -44880,7 +44911,8 @@ function checkVersionProperty(name, value, expected, line) {
   }
   return tmp;
 }
-function checkAntora(text, catalog, version) {
+function checkAntora(text, catalog, version, catalogPath) {
+  catalogPath = catalogPath === VOID ? 'gradle/libs.versions.toml' : catalogPath;
   var tmp;
   try {
     // Inline function 'kotlin.js.unsafeCast' call
@@ -44941,13 +44973,13 @@ function checkAntora(text, catalog, version) {
       // Inline function 'kotlin.collections.contains' call
       // Inline function 'kotlin.collections.containsKey' call
       if (!(isInterface(catalog, KtMap) ? catalog : THROW_CCE()).k1(alias)) {
-        this_0.e(new Problem('Attribute "' + attribute + '" has no "' + alias + '" version in gradle/libs.versions.toml.', 'doc/antora.yml', line));
+        this_0.e(new Problem('Attribute "' + attribute + '" has no "' + alias + '" version in ' + catalogPath + '.', 'doc/antora.yml', line));
       } else {
         if (catalog.l1(alias) == null) {
-          this_0.e(new Problem('Version "' + alias + '" in gradle/libs.versions.toml is not a plain string, so "' + attribute + '" cannot be checked.', 'doc/antora.yml', line));
+          this_0.e(new Problem('Version "' + alias + '" in ' + catalogPath + ' is not a plain string, so "' + attribute + '" cannot be checked.', 'doc/antora.yml', line));
         } else {
           if (!(catalog.l1(alias) === actual)) {
-            this_0.e(new Problem('Attribute "' + attribute + '" is "' + actual + '" but "' + alias + '" is "' + catalog.l1(alias) + '" in gradle/libs.versions.toml.', 'doc/antora.yml', line));
+            this_0.e(new Problem('Attribute "' + attribute + '" is "' + actual + '" but "' + alias + '" is "' + catalog.l1(alias) + '" in ' + catalogPath + '.', 'doc/antora.yml', line));
           }
         }
       }
@@ -44955,11 +44987,12 @@ function checkAntora(text, catalog, version) {
   }
   return this_0.a3();
 }
-function checkRootBuild(text, expectedVersion) {
+function checkRootBuild(text, expectedVersion, rootBuild) {
+  rootBuild = rootBuild === VOID ? 'build.gradle.kts' : rootBuild;
   var script = new KotlinScript(text);
   var blocks = script.i9('allprojects');
   if (blocks.o()) {
-    return listOf(new Problem('build.gradle.kts has no "allprojects { }" block.', 'build.gradle.kts'));
+    return listOf(new Problem(rootBuild + ' has no "allprojects { }" block.', rootBuild));
   }
   // Inline function 'kotlin.collections.flatMap' call
   // Inline function 'kotlin.collections.flatMapTo' call
@@ -44972,7 +45005,7 @@ function checkRootBuild(text, expectedVersion) {
   }
   var assignments = destination;
   if (assignments.o()) {
-    return listOf(new Problem('The "allprojects { }" block of build.gradle.kts has no "version = ..." assignment.', 'build.gradle.kts'));
+    return listOf(new Problem('The "allprojects { }" block of ' + rootBuild + ' has no "version = ..." assignment.', rootBuild));
   }
   // Inline function 'kotlin.collections.buildList' call
   // Inline function 'kotlin.collections.buildListInternal' call
@@ -44981,17 +45014,18 @@ function checkRootBuild(text, expectedVersion) {
   var _iterator__ex2g4s_0 = drop(assignments, 1).f();
   while (_iterator__ex2g4s_0.g()) {
     var extra = _iterator__ex2g4s_0.h();
-    this_0.e(new Problem('"version" is assigned more than once in the "allprojects { }" block.', 'build.gradle.kts', extra.k9_1));
+    this_0.e(new Problem('"version" is assigned more than once in the "allprojects { }" block.', rootBuild, extra.k9_1));
   }
   var assignment = first(assignments);
   if (assignment.l9_1 == null) {
-    this_0.e(new Problem('"version = ' + assignment.m9_1 + '" must be a plain string literal, to be checked.', 'build.gradle.kts', assignment.k9_1));
+    this_0.e(new Problem('"version = ' + assignment.m9_1 + '" must be a plain string literal, to be checked.', rootBuild, assignment.k9_1));
   } else if (!(expectedVersion == null) && !(assignment.l9_1 == expectedVersion)) {
-    this_0.e(new Problem('Version is "' + assignment.l9_1 + '" in build.gradle.kts, so the release must be named "' + assignment.l9_1 + '".', 'build.gradle.kts', assignment.k9_1));
+    this_0.e(new Problem('Version is "' + assignment.l9_1 + '" in ' + rootBuild + ', so the release must be named "' + assignment.l9_1 + '".', rootBuild, assignment.k9_1));
   }
   return this_0.a3();
 }
-function checkOtherBuild(path, text) {
+function checkOtherBuild(path, text, rootBuild) {
+  rootBuild = rootBuild === VOID ? 'build.gradle.kts' : rootBuild;
   // Inline function 'kotlin.collections.map' call
   var this_0 = (new KotlinScript(text)).n9();
   // Inline function 'kotlin.collections.mapTo' call
@@ -44999,7 +45033,7 @@ function checkOtherBuild(path, text) {
   var _iterator__ex2g4s = this_0.f();
   while (_iterator__ex2g4s.g()) {
     var item = _iterator__ex2g4s.h();
-    var tmp$ret$2 = new Problem('Only the root build.gradle.kts may assign "version".', path, item.k9_1);
+    var tmp$ret$2 = new Problem('Only the root ' + rootBuild + ' may assign "version".', path, item.k9_1);
     destination.e(tmp$ret$2);
   }
   return destination;
@@ -45300,7 +45334,7 @@ function run() {
     // Inline function 'actions.core.InputOptions.Companion.invoke' call
     // Inline function 'actions.core.actions_core_InputOptions_Companion_1b5u4w_invoke_jkqnwo' call
     var tmp$ret$0 = {required: true};
-    var problems = checkAll(getInput('releaseName', tmp$ret$0), getInput('tagName'));
+    var problems = checkAll(getInput('release-name', tmp$ret$0), getInput('tag-name'), getInput('check-gradle') === 'true', getInput('gradle-directory'));
     var _iterator__ex2g4s = problems.f();
     while (_iterator__ex2g4s.g()) {
       var problem = _iterator__ex2g4s.h();
@@ -45323,7 +45357,7 @@ function run() {
     }
   }
 }
-function checkAll(releaseName, tagName) {
+function checkAll(releaseName, tagName, checkGradle, gradleDirectory) {
   // Inline function 'kotlin.collections.buildList' call
   // Inline function 'kotlin.collections.buildListInternal' call
   // Inline function 'kotlin.apply' call
@@ -45333,22 +45367,26 @@ function checkAll(releaseName, tagName) {
   info('Checking the tag name');
   this_0.y1(checkTagName(tagName, releaseName));
   var version = parseReleaseVersion(releaseName);
-  info('Checking build.gradle.kts');
-  if (!kodein_github_actions_version_check_exists('build.gradle.kts')) {
-    this_0.e(new Problem('build.gradle.kts does not exist.', 'build.gradle.kts'));
-  } else {
-    this_0.y1(checkRootBuild(readText('build.gradle.kts'), version));
-  }
-  info('Checking that no other build.gradle.kts sets a version');
-  var _iterator__ex2g4s = findOtherBuildScripts().f();
-  while (_iterator__ex2g4s.g()) {
-    var path = _iterator__ex2g4s.h();
-    this_0.y1(checkOtherBuild(path, readText(path)));
+  if (checkGradle) {
+    var rootBuild = rootBuildPath(gradleDirectory);
+    info('Checking ' + rootBuild);
+    if (!kodein_github_actions_version_check_exists(rootBuild)) {
+      this_0.e(new Problem(rootBuild + ' does not exist.', rootBuild));
+    } else {
+      this_0.y1(checkRootBuild(readText(rootBuild), version, rootBuild));
+      info('Checking that no other build.gradle.kts sets a version');
+      var _iterator__ex2g4s = findOtherBuildScripts(rootBuild).f();
+      while (_iterator__ex2g4s.g()) {
+        var path = _iterator__ex2g4s.h();
+        this_0.y1(checkOtherBuild(path, readText(path), rootBuild));
+      }
+    }
   }
   if (kodein_github_actions_version_check_exists('doc/antora.yml')) {
     info('Checking doc/antora.yml');
-    var catalog = kodein_github_actions_version_check_exists('gradle/libs.versions.toml') ? parseCatalogVersions(readText('gradle/libs.versions.toml')) : emptyMap();
-    this_0.y1(checkAntora(readText('doc/antora.yml'), catalog, version));
+    var catalogPath = versionCatalogPath(gradleDirectory);
+    var catalog = kodein_github_actions_version_check_exists(catalogPath) ? parseCatalogVersions(readText(catalogPath)) : emptyMap();
+    this_0.y1(checkAntora(readText('doc/antora.yml'), catalog, version, catalogPath));
   }
   return this_0.a3();
 }
@@ -45398,8 +45436,56 @@ function isSkipped(directory) {
       return startsWith_0(directory, '.');
   }
 }
-function findOtherBuildScripts(directory) {
-  directory = directory === VOID ? '.' : directory;
+function pathIn(directory, file) {
+  // Inline function 'kotlin.text.trim' call
+  var tmp$ret$0 = toString_1(trim(isCharSequence(directory) ? directory : THROW_CCE()));
+  var trimmed = trimEnd(removePrefix(tmp$ret$0, './'), charArrayOf([_Char___init__impl__6a9atx(47)]));
+  var tmp;
+  var tmp_0;
+  // Inline function 'kotlin.text.isEmpty' call
+  if (charSequenceLength(trimmed) === 0) {
+    tmp_0 = true;
+  } else {
+    tmp_0 = trimmed === '.';
+  }
+  if (tmp_0) {
+    tmp = file;
+  } else {
+    tmp = trimmed + '/' + file;
+  }
+  return tmp;
+}
+function rootBuildPath(directory) {
+  return pathIn(directory, 'build.gradle.kts');
+}
+function versionCatalogPath(directory) {
+  return pathIn(directory, 'gradle/libs.versions.toml');
+}
+function findOtherBuildScripts(rootBuild) {
+  // Inline function 'kotlin.text.ifEmpty' call
+  var this_0 = trimEnd(removeSuffix(rootBuild, 'build.gradle.kts'), charArrayOf([_Char___init__impl__6a9atx(47)]));
+  var tmp;
+  // Inline function 'kotlin.text.isEmpty' call
+  if (charSequenceLength(this_0) === 0) {
+    tmp = '.';
+  } else {
+    tmp = this_0;
+  }
+  var tmp$ret$0 = tmp;
+  // Inline function 'kotlin.collections.filter' call
+  var tmp0 = findBuildScripts(tmp$ret$0);
+  // Inline function 'kotlin.collections.filterTo' call
+  var destination = ArrayList_init_$Create$();
+  var _iterator__ex2g4s = tmp0.f();
+  while (_iterator__ex2g4s.g()) {
+    var element = _iterator__ex2g4s.h();
+    if (!(element === rootBuild)) {
+      destination.e(element);
+    }
+  }
+  return destination;
+}
+function findBuildScripts(directory) {
   // Inline function 'node.fs.ReaddirSyncWithFileTypesOptions.Companion.invoke' call
   // Inline function 'node.fs.node_fs_ReaddirSyncWithFileTypesOptions_Companion_mlnk2m_invoke_jkqnwo' call
   var tmp$ret$0 = {withFileTypes: true};
@@ -45416,7 +45502,7 @@ function findOtherBuildScripts(directory) {
     // Inline function 'kotlin.js.asDynamic' call
     var name = element.name;
     var path = directory === '.' ? name : directory + '/' + name;
-    var list = element.isDirectory() && !isSkipped(name) ? findOtherBuildScripts(path) : element.isFile() && name === 'build.gradle.kts' && !(directory === '.') ? listOf(path) : emptyList();
+    var list = element.isDirectory() && !isSkipped(name) ? findBuildScripts(path) : element.isFile() && name === 'build.gradle.kts' ? listOf(path) : emptyList();
     addAll(destination, list);
   }
   return destination;

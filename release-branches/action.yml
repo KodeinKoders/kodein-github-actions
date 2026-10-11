@@ -1,7 +1,7 @@
 name: Release branches
 description: Points the release/v{Major}.{Minor} branch (or v{Major}.{Minor}, see skip-release-prefix) at the commit of a release, creating it if needed.
 inputs:
-  releaseName:
+  release-name:
     description: 'Name of the release being created, e.g. 3.5.2'
     required: true
   commit:
