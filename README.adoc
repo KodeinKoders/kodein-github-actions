@@ -200,7 +200,8 @@ A composite action cannot read the `secrets` context, so the secrets are passed 
 
 | `project`
 | Empty
-| The Gradle subproject to publish; empty means the root project.
+| The Gradle project to publish, such as `:lib`: the tasks are run as `:lib:publishAndReleaseToMavenCentral`.
+Empty runs them without a project, `publishAndReleaseToMavenCentral`, which Gradle runs on every project of the build that has the task, not only the root project.
 |===
 
 A missing input arrives empty, and the step that needs it is skipped.
