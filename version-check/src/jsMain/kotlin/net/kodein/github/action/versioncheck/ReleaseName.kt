@@ -11,3 +11,6 @@ internal fun parseReleaseVersion(releaseName: String): String? =
 internal fun checkReleaseName(releaseName: String): List<Problem> =
     if (parseReleaseVersion(releaseName) != null) emptyList()
     else listOf(Problem("Release name \"$releaseName\" must be \"v{Major}.{Minor}.{Patch}\", optionally followed by \"-{Tag}\"."))
+
+/** The version without its patch: `3.5.2` -> `3.5`, and `3.5.2-RC1` -> `3.5`. */
+internal fun displayVersionOf(version: String): String = version.split('.').take(2).joinToString(".")

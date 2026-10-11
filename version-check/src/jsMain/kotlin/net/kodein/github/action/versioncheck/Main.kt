@@ -25,13 +25,10 @@ private fun checkAll(releaseName: String): List<Problem> = buildList {
         addAll(checkOtherBuild(path, readText(path)))
     }
 
-    if (exists("doc")) {
+    if (exists(ANTORA_FILE)) {
         info("Checking $ANTORA_FILE")
-        when {
-            !exists(ANTORA_FILE) -> add(Problem("$ANTORA_FILE does not exist.", ANTORA_FILE))
-            !exists(VERSION_CATALOG) -> add(Problem("$VERSION_CATALOG does not exist, but $ANTORA_FILE versions are checked against it.", VERSION_CATALOG))
-            else -> addAll(checkAntora(readText(ANTORA_FILE), parseCatalogVersions(readText(VERSION_CATALOG))))
-        }
+        val catalog = if (exists(VERSION_CATALOG)) parseCatalogVersions(readText(VERSION_CATALOG)) else emptyMap()
+        addAll(checkAntora(readText(ANTORA_FILE), catalog, version))
     }
 }
 

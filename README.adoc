@@ -39,7 +39,11 @@ It fails the job, with one annotation per problem, unless:
 * the release name is `v\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`;
 * the root `build.gradle.kts` assigns `version` in its `allprojects` block, to the release name without its `v`;
 * no other `build.gradle.kts` assigns `version`;
-* when a `doc/` directory exists, `doc/antora.yml` exists, has no root `version` or `display_version`, and each `XXX-version` attribute equals the `XXX` version of `gradle/libs.versions.toml`.
+* when `doc/antora.yml` exists:
+** `version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
+** `display_version` is that version without its patch and tag, `\{Major}.\{Minor}`, and is quoted so that YAML does not read `3.10` as the number `3.1`;
+** the `version` attribute of `asciidoc.attributes` is the release's version;
+** each `XXX-version` attribute of `asciidoc.attributes` equals the `XXX` version of `gradle/libs.versions.toml`.
 
 [source,yaml]
 ----
