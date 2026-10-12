@@ -1,42 +1,30 @@
 package net.kodein.github.action.versioncheck
 
-import node.fs.ReaddirSyncWithFileTypesOptions
 import node.fs.existsSync
 import node.fs.readFileSync
-import node.fs.readdirSync
+import node.fs.rmSync
+import node.fs.writeFileSync
 
 
-// All paths are relative to the working directory, which is the workspace once the repository is checked out.
+// All paths are relative to the working path, which is the workspace once the repository is checked out.
 
 internal fun exists(path: String): Boolean = existsSync(path)
 
 internal fun readText(path: String): String = readFileSync(path, "utf8".unsafeCast<node.buffer.BufferEncoding>())
 
-// Directories that hold other projects' files, or build output - never the repository's own build scripts.
-private fun isSkipped(directory: String) = directory == "build" || directory == "node_modules" || directory.startsWith(".")
+internal fun writeText(path: String, text: String) = writeFileSync(path, text)
 
-/** The path of [file] in the Gradle build that lives in [directory], relative to the workspace. */
-private fun pathIn(directory: String, file: String): String {
-    val trimmed = directory.trim().removePrefix("./").trimEnd('/')
-    return if (trimmed.isEmpty() || trimmed == ".") file else "$trimmed/$file"
-}
+internal fun delete(path: String) = rmSync(path)
 
-internal fun rootBuildPath(directory: String): String = pathIn(directory, ROOT_BUILD)
+/** Whether [path] designates the workspace itself, as opposed to a subpath of it. */
+internal fun isWorkspaceRoot(path: String): Boolean = normalized(path).let { it.isEmpty() || it == "." }
 
-internal fun versionCatalogPath(directory: String): String = pathIn(directory, VERSION_CATALOG)
+private fun normalized(path: String) = path.trim().removePrefix("./").trimEnd('/')
 
-/** Every `build.gradle.kts` in the directory of [rootBuild] and below, except [rootBuild] itself. */
-internal fun findOtherBuildScripts(rootBuild: String): List<String> =
-    findBuildScripts(rootBuild.removeSuffix(ROOT_BUILD).trimEnd('/').ifEmpty { "." }).filter { it != rootBuild }
+/** The path of [file] in the Gradle build that lives in [path], relative to the workspace. */
+private fun pathIn(path: String, file: String): String =
+    if (isWorkspaceRoot(path)) file else "${normalized(path)}/$file"
 
-private fun findBuildScripts(directory: String): List<String> =
-    readdirSync(directory, ReaddirSyncWithFileTypesOptions(withFileTypes = true)).flatMap { entry ->
-        // Entries are typed after the requested encoding, which is a string here.
-        val name = entry.name.unsafeCast<String>()
-        val path = if (directory == ".") name else "$directory/$name"
-        when {
-            entry.isDirectory() && !isSkipped(name) -> findBuildScripts(path)
-            entry.isFile() && name == ROOT_BUILD -> listOf(path)
-            else -> emptyList()
-        }
-    }
+internal fun initScriptPath(path: String): String = pathIn(path, INIT_SCRIPT)
+
+internal fun versionCatalogPath(path: String): String = pathIn(path, VERSION_CATALOG)

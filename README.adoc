@@ -39,8 +39,7 @@ It fails the job, with one annotation per problem, unless:
 * the release name is `\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`;
 * the tag of the release is the release name prefixed by `v`, such as `v1.2.3` for release `1.2.3`;
 * when the Gradle check is enabled, which it is unless `check-gradle` is `false`:
-** the root `build.gradle.kts` assigns `version` in its `allprojects` block, to the release name;
-** no other `build.gradle.kts` assigns `version`;
+** the root project and all the other projects of the Gradle build have the release name as their version;
 * when `doc/antora.yml` exists:
 ** `version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
 ** `display_version` is that version without its patch and tag, `\{Major}.\{Minor}`, and is quoted so that YAML does not read `3.10` as the number `3.1`;
@@ -57,17 +56,22 @@ It fails the job, with one annotation per problem, unless:
 
 The `tag-name` input defaults to `github.event.release.tag_name`, which is the tag of the release on a `release` event.
 
-The Gradle build is expected at the root of the repository: its root `build.gradle.kts` and its `gradle/libs.versions.toml`.
-Set `gradle-directory` when the build lives in a subdirectory, as for a multi-build Gradle project.
-Both files are then read from that directory, as `<gradle-directory>/build.gradle.kts` and `<gradle-directory>/gradle/libs.versions.toml`, and only the `build.gradle.kts` files under it are checked for a `version`.
-The directory is also used when `check-gradle` is `false`, for the version catalog.
+The Gradle check runs a Gradle init script on the build, with the `./gradlew` wrapper at the root of the repository, so the job needs a JDK (see `gradle-kotlin-setup`).
+The script is written for the time of the run, in the path of the build, as `kodein_initScript_checkVersion.init.gradle.kts`.
+It registers a task that fails if the version of the root project, or of any other project, is not the release name.
+The command is `./gradlew --no-configuration-cache --no-daemon -I kodein_initScript_checkVersion.init.gradle.kts -PexpectedVersion=<release name> kodein_initScript_checkVersion -q`, and the check passes if it succeeds.
+
+The Gradle build is expected at the root of the repository.
+Set `gradle-build-path` when the build to check is not the root one, as for a multi-build Gradle project, where the root build includes several builds with `includeBuild` and only one of them is to be checked.
+The wrapper is still the one at the root of the repository: `-p <gradle-build-path>` is added to the command, and the init script is written in that path.
+The path is also used when `check-gradle` is `false`, for the `gradle/libs.versions.toml` version catalog read to check the Antora documentation.
 
 [source,yaml]
 ----
 - uses: KodeinKoders/kodein-github-actions/version-check@v0.1
   with:
     release-name: ${{ github.event.release.name }}
-    gradle-directory: mockmp
+    gradle-build-path: mockmp
 ----
 
 The action runs from `version-check/dist/`, which is committed.

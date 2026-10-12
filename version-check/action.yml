@@ -8,10 +8,10 @@ inputs:
     description: 'Name of the tag of the release, which must be the release name prefixed by v, e.g. v3.5.2'
     default: ${{ github.event.release.tag_name }}
   check-gradle:
-    description: 'Whether to check the version of the Gradle build, in its root build.gradle.kts'
+    description: 'Whether to check that all the projects of the Gradle build have the release name as version, by running Gradle (which must be set up)'
     default: 'true'
-  gradle-directory:
-    description: 'Directory of the Gradle build, relative to the repository root: its build.gradle.kts and gradle/libs.versions.toml are read from there (defaults to the repository root)'
+  gradle-build-path:
+    description: 'Path of the Gradle build to check, relative to the repository root, when it is one of the builds included by the root build (defaults to the repository root): Gradle is run on it with -p, and its gradle/libs.versions.toml is read from there'
     default: '.'
 runs:
   using: node24

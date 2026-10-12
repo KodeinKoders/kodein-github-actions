@@ -30,6 +30,8 @@ kotlin {
             implementation(libs.kotlinWrappers.actions.io)
             implementation(libs.kotlinWrappers.yaml)
 
+            implementation(libs.kotlinx.coroutines)
+
             // Bundles the action and its npm dependencies into a single file (see the "bundle" task below).
             implementation(devNpm("@vercel/ncc", libs.versions.ncc.get()))
         }
