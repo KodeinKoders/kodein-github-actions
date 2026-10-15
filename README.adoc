@@ -3,6 +3,7 @@
 :toclevels: 2
 :idprefix:
 :source-highlighter: highlight.js
+:version-branch: v0.3
 
 *GitHub Actions for Kodein projects, written in Kotlin/JS.*
 
@@ -40,17 +41,20 @@ It fails the job, with one annotation per problem, unless:
 * the tag of the release is the release name prefixed by `v`, such as `v1.2.3` for release `1.2.3`;
 * when the Gradle check is enabled, which it is unless `check-gradle` is `false`:
 ** the root project and all the other projects of the Gradle build have the release name as their version;
-* `README.adoc` exists at the root of the repository, and its `:version:` attribute is the release's version, such as `3.5.2` or `3.5.2-RC1`;
+* `README.adoc` exists at the root of the repository, and the attributes of its header that are there, if any, have the expected value:
+** `version` is the release's version, such as `3.5.2` or `3.5.2-RC1`;
+** `version-branch` is the name of the release's branch, `v\{Major}.\{Minor}`, such as `v3.5`;
+** `version-tag` is the name of the release's tag, `v` followed by the version, such as `v3.5.2`;
 * when `doc/antora.yml` exists:
 ** `version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
 ** `display_version` is that version without its patch and tag, `\{Major}.\{Minor}`, and is quoted so that YAML does not read `3.10` as the number `3.1`;
 ** the `version` attribute of `asciidoc.attributes` is the release's version;
 ** each `XXX-version` attribute of `asciidoc.attributes` equals the `XXX` version of the `gradle/libs.versions.toml` version catalog.
 
-[source,yaml]
+[source,yaml,subs=attributes+]
 ----
 - uses: actions/checkout@v7
-- uses: KodeinKoders/kodein-github-actions/version-check@v0.1
+- uses: KodeinKoders/kodein-github-actions/version-check@{version-branch}
   with:
     release-name: ${{ github.event.release.name }}
 ----
@@ -67,9 +71,9 @@ Set `gradle-build-path` when the build to check is not the root one, as for a mu
 The wrapper is still the one at the root of the repository: `-p <gradle-build-path>` is added to the command, and the init script is written in that path.
 The path is also used when `check-gradle` is `false`, for the `gradle/libs.versions.toml` version catalog read to check the Antora documentation.
 
-[source,yaml]
+[source,yaml,subs=attributes+]
 ----
-- uses: KodeinKoders/kodein-github-actions/version-check@v0.1
+- uses: KodeinKoders/kodein-github-actions/version-check@{version-branch}
   with:
     release-name: ${{ github.event.release.name }}
     gradle-build-path: mockmp
@@ -94,12 +98,12 @@ A release name that is not `\{Major}.\{Minor}.\{Patch}`, optionally followed by 
 The branch is updated through the GitHub API, so no checkout is needed.
 The job needs the `contents: write` permission.
 
-[source,yaml]
+[source,yaml,subs=attributes+]
 ----
 permissions:
   contents: write
 steps:
-  - uses: KodeinKoders/kodein-github-actions/release-branches@v0.1
+  - uses: KodeinKoders/kodein-github-actions/release-branches@{version-branch}
     with:
       release-name: ${{ github.event.release.name }}
 ----
@@ -121,9 +125,9 @@ It:
 
 The Konan cache key depends on the runner's OS, on `gradle/libs.versions.toml` and on the Gradle build scripts.
 
-[source,yaml]
+[source,yaml,subs=attributes+]
 ----
-- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@v0.1
+- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@{version-branch}
   with:
     java-version: '21'
 ----
@@ -160,10 +164,10 @@ A step is skipped when one of its inputs is empty:
 A project without Gradle plugins therefore leaves the two `gradle-publish-*` inputs out, and a project that only publishes plugins leaves the two `central-portal-token-*` inputs out.
 If both steps are skipped, nothing is published and the action fails.
 
-[source,yaml]
+[source,yaml,subs=attributes+]
 ----
-- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@v0.1
-- uses: KodeinKoders/kodein-github-actions/publish@v0.1
+- uses: KodeinKoders/kodein-github-actions/gradle-kotlin-setup@{version-branch}
+- uses: KodeinKoders/kodein-github-actions/publish@{version-branch}
   with:
     central-portal-token-username: ${{ secrets.CENTRAL_PORTAL_TOKEN_USERNAME }}
     central-portal-token-password: ${{ secrets.CENTRAL_PORTAL_TOKEN_PASSWORD }}

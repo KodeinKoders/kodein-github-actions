@@ -40130,16 +40130,16 @@ initMetadataForObject(Unit, 'Unit');
 initMetadataForClass(AbstractCollection, 'AbstractCollection', VOID, VOID, [Collection]);
 initMetadataForClass(AbstractMutableCollection, 'AbstractMutableCollection', VOID, AbstractCollection, [Collection]);
 initMetadataForClass(IteratorImpl, 'IteratorImpl');
-initMetadataForClass(AbstractMutableList, 'AbstractMutableList', VOID, AbstractMutableCollection, [KtList, Collection]);
+initMetadataForClass(AbstractMutableList, 'AbstractMutableList', VOID, AbstractMutableCollection, [Collection, KtList]);
 initMetadataForClass(AbstractMap, 'AbstractMap', VOID, VOID, [KtMap]);
 initMetadataForClass(AbstractMutableMap, 'AbstractMutableMap', VOID, AbstractMap, [KtMap]);
-initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [Collection, KtSet]);
+initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [KtSet, Collection]);
 initMetadataForCompanion(Companion_1);
-initMetadataForClass(ArrayList, 'ArrayList', ArrayList_init_$Create$, AbstractMutableList, [KtList, Collection]);
+initMetadataForClass(ArrayList, 'ArrayList', ArrayList_init_$Create$, AbstractMutableList, [Collection, KtList]);
 initMetadataForClass(HashMap, 'HashMap', HashMap_init_$Create$, AbstractMutableMap, [KtMap]);
-initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [Collection, KtSet]);
+initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [KtSet, Collection]);
 initMetadataForClass(HashMapEntrySet, 'HashMapEntrySet', VOID, HashMapEntrySetBase);
-initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [Collection, KtSet]);
+initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [KtSet, Collection]);
 initMetadataForCompanion(Companion_2);
 initMetadataForClass(Itr, 'Itr');
 initMetadataForClass(KeysItr, 'KeysItr', VOID, Itr);
@@ -40183,7 +40183,7 @@ function containsAllEntries(m) {
 initMetadataForInterface(InternalMap, 'InternalMap');
 initMetadataForClass(InternalHashMap, 'InternalHashMap', InternalHashMap_init_$Create$, VOID, [InternalMap]);
 initMetadataForClass(LinkedHashMap, 'LinkedHashMap', LinkedHashMap_init_$Create$, HashMap, [KtMap]);
-initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [Collection, KtSet]);
+initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [KtSet, Collection]);
 initMetadataForInterface(Continuation, 'Continuation');
 initMetadataForClass(InterceptedCoroutine, 'InterceptedCoroutine', VOID, VOID, [Continuation]);
 initMetadataForClass(CoroutineImpl, 'CoroutineImpl', VOID, InterceptedCoroutine, [Continuation]);
@@ -46514,7 +46514,7 @@ initMetadataForClass(ContextScope, 'ContextScope', VOID, VOID, [CoroutineScope])
 initMetadataForClass(kotlinx_coroutines_core_Symbol, 'Symbol');
 initMetadataForClass(SetTimeoutBasedDispatcher, 'SetTimeoutBasedDispatcher', VOID, CoroutineDispatcher, VOID, [1]);
 initMetadataForObject(NodeDispatcher, 'NodeDispatcher', VOID, SetTimeoutBasedDispatcher, VOID, [1]);
-initMetadataForClass(MessageQueue, 'MessageQueue', VOID, VOID, [KtList, Collection]);
+initMetadataForClass(MessageQueue, 'MessageQueue', VOID, VOID, [Collection, KtList]);
 initMetadataForClass(ScheduledMessageQueue, 'ScheduledMessageQueue', VOID, MessageQueue);
 initMetadataForClass(WindowMessageQueue, 'WindowMessageQueue', VOID, MessageQueue);
 initMetadataForObject(Dispatchers, 'Dispatchers');
@@ -49655,23 +49655,17 @@ function initScriptPath(path) {
 function versionCatalogPath(path) {
   return pathIn(path, 'gradle/libs.versions.toml');
 }
-function get_versionAttributeRegex() {
-  _init_properties_Readme_kt__4czxma();
-  return versionAttributeRegex;
-}
-var versionAttributeRegex;
-function checkReadme(text, version) {
-  _init_properties_Readme_kt__4czxma();
-  var tmp0_elvis_lhs = get_versionAttributeRegex().y7(text);
+function checkAttribute(text, name, expected) {
+  var tmp0_elvis_lhs = Regex_init_$Create$('^:' + Companion_getInstance_3().w7(name) + ':[ \\t]*(.*?)[ \\t]*$', RegexOption_MULTILINE_getInstance()).y7(text);
   var tmp;
   if (tmp0_elvis_lhs == null) {
-    return listOf(new Problem('README.adoc must have a ":version:" attribute.', 'README.adoc'));
+    return emptyList();
   } else {
     tmp = tmp0_elvis_lhs;
   }
   var match = tmp;
   var actual = match.p8().o(1);
-  if (version == null || actual === version)
+  if (expected == null || actual === expected)
     return emptyList();
   // Inline function 'kotlin.text.count' call
   var count = 0;
@@ -49685,14 +49679,31 @@ function checkReadme(text, version) {
     }
   }
   var line = count + 1 | 0;
-  return listOf(new Problem('The "version" attribute is "' + actual + '" in README.adoc, but it must be "' + version + '" for this release.', 'README.adoc', line));
+  return listOf(new Problem('The "' + name + '" attribute is "' + actual + '" in README.adoc, but it must be "' + expected + '" for this release.', 'README.adoc', line));
 }
-var properties_initialized_Readme_kt_hxvc40;
-function _init_properties_Readme_kt__4czxma() {
-  if (!properties_initialized_Readme_kt_hxvc40) {
-    properties_initialized_Readme_kt_hxvc40 = true;
-    versionAttributeRegex = Regex_init_$Create$('^:version:[ \\t]*(.*?)[ \\t]*$', RegexOption_MULTILINE_getInstance());
+function checkReadme(text, version) {
+  // Inline function 'kotlin.collections.buildList' call
+  // Inline function 'kotlin.collections.buildListInternal' call
+  // Inline function 'kotlin.apply' call
+  var this_0 = ArrayList_init_$Create$();
+  this_0.p1(checkAttribute(text, 'version', version));
+  var tmp;
+  if (version == null) {
+    tmp = null;
+  } else {
+    // Inline function 'kotlin.let' call
+    tmp = 'v' + displayVersionOf(version);
   }
+  this_0.p1(checkAttribute(text, 'version-branch', tmp));
+  var tmp_0;
+  if (version == null) {
+    tmp_0 = null;
+  } else {
+    // Inline function 'kotlin.let' call
+    tmp_0 = 'v' + version;
+  }
+  this_0.p1(checkAttribute(text, 'version-tag', tmp_0));
+  return this_0.n2();
 }
 function get_releaseNameRegex() {
   _init_properties_ReleaseName_kt__327log();

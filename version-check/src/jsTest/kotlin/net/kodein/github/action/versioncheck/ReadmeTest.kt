@@ -8,25 +8,32 @@ class ReadmeTest {
 
     @Test
     fun valid() {
-        assertEquals(emptyList(), checkReadme("= My Lib\n:version: 3.5.2\n\nText", "3.5.2"))
-        assertEquals(emptyList(), checkReadme("= My Lib\n:version: 3.5.2-RC1\n", "3.5.2-RC1"))
+        assertEquals(emptyList(), checkReadme("= My Lib\n:version: 3.5.2\n:version-branch: v3.5\n:version-tag: v3.5.2\n\nText", "3.5.2"))
+        assertEquals(emptyList(), checkReadme("= My Lib\n:version: 3.5.2-RC1\n:version-branch: v3.5\n:version-tag: v3.5.2-RC1\n", "3.5.2-RC1"))
     }
 
     @Test
-    fun missing() {
-        assertEquals(listOf("README.adoc must have a \":version:\" attribute."), checkReadme("= My Lib\n:other: 3.5.2\n", "3.5.2").map { it.message })
+    fun attributesAreOptional() {
+        assertEquals(emptyList(), checkReadme("= My Lib\n:other: 3.5.2\n", "3.5.2"))
+        assertEquals(emptyList(), checkReadme("= My Lib\n:version: 3.5.2\n", "3.5.2"))
     }
 
     @Test
     fun wrong() {
-        val problems = checkReadme("= My Lib\n:version: 3.5\n", "3.5.2")
-        assertEquals(listOf(2), problems.map { it.line })
-        assertEquals(listOf("The \"version\" attribute is \"3.5\" in README.adoc, but it must be \"3.5.2\" for this release."), problems.map { it.message })
+        val problems = checkReadme("= My Lib\n:version: 3.5\n:version-branch: 3.5\n:version-tag: v3.5.1\n", "3.5.2")
+        assertEquals(listOf(2, 3, 4), problems.map { it.line })
+        assertEquals(
+            listOf(
+                "The \"version\" attribute is \"3.5\" in README.adoc, but it must be \"3.5.2\" for this release.",
+                "The \"version-branch\" attribute is \"3.5\" in README.adoc, but it must be \"v3.5\" for this release.",
+                "The \"version-tag\" attribute is \"v3.5.1\" in README.adoc, but it must be \"v3.5.2\" for this release.",
+            ),
+            problems.map { it.message },
+        )
     }
 
     @Test
-    fun invalidReleaseNameOnlyChecksPresence() {
-        assertEquals(emptyList(), checkReadme(":version: x\n", null))
-        assertEquals(1, checkReadme("= My Lib\n", null).size)
+    fun invalidReleaseNameChecksNothing() {
+        assertEquals(emptyList(), checkReadme(":version: x\n:version-tag: y\n", null))
     }
 }
