@@ -33,13 +33,14 @@ Two more actions are composite actions, written in YAML only, with nothing to bu
 
 == version-check
 
-Checks that the release being created, the Gradle version and the Antora documentation agree.
+Checks that the release being created, the Gradle version, the README and the Antora documentation agree.
 It fails the job, with one annotation per problem, unless:
 
 * the release name is `\{Major}.\{Minor}.\{Patch}`, optionally followed by `-\{Tag}`;
 * the tag of the release is the release name prefixed by `v`, such as `v1.2.3` for release `1.2.3`;
 * when the Gradle check is enabled, which it is unless `check-gradle` is `false`:
 ** the root project and all the other projects of the Gradle build have the release name as their version;
+* `README.adoc` exists at the root of the repository, and its `:version:` attribute is the release's version, such as `3.5.2` or `3.5.2-RC1`;
 * when `doc/antora.yml` exists:
 ** `version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
 ** `display_version` is that version without its patch and tag, `\{Major}.\{Minor}`, and is quoted so that YAML does not read `3.10` as the number `3.1`;

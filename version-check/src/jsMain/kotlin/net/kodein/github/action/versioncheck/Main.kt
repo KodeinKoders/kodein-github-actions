@@ -23,6 +23,10 @@ private suspend fun checkAll(releaseName: String, tagName: String, checkGradle: 
         addAll(checkGradleVersions(gradleBuildPath, version))
     }
 
+    info("Checking $README_FILE")
+    if (exists(README_FILE)) addAll(checkReadme(readText(README_FILE), version))
+    else add(Problem("$README_FILE does not exist.", README_FILE))
+
     if (exists(ANTORA_FILE)) {
         info("Checking $ANTORA_FILE")
         val catalogPath = versionCatalogPath(gradleBuildPath)

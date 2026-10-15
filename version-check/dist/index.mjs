@@ -40133,13 +40133,13 @@ initMetadataForClass(IteratorImpl, 'IteratorImpl');
 initMetadataForClass(AbstractMutableList, 'AbstractMutableList', VOID, AbstractMutableCollection, [KtList, Collection]);
 initMetadataForClass(AbstractMap, 'AbstractMap', VOID, VOID, [KtMap]);
 initMetadataForClass(AbstractMutableMap, 'AbstractMutableMap', VOID, AbstractMap, [KtMap]);
-initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [KtSet, Collection]);
+initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [Collection, KtSet]);
 initMetadataForCompanion(Companion_1);
 initMetadataForClass(ArrayList, 'ArrayList', ArrayList_init_$Create$, AbstractMutableList, [KtList, Collection]);
 initMetadataForClass(HashMap, 'HashMap', HashMap_init_$Create$, AbstractMutableMap, [KtMap]);
-initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [KtSet, Collection]);
+initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [Collection, KtSet]);
 initMetadataForClass(HashMapEntrySet, 'HashMapEntrySet', VOID, HashMapEntrySetBase);
-initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [KtSet, Collection]);
+initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [Collection, KtSet]);
 initMetadataForCompanion(Companion_2);
 initMetadataForClass(Itr, 'Itr');
 initMetadataForClass(KeysItr, 'KeysItr', VOID, Itr);
@@ -40183,7 +40183,7 @@ function containsAllEntries(m) {
 initMetadataForInterface(InternalMap, 'InternalMap');
 initMetadataForClass(InternalHashMap, 'InternalHashMap', InternalHashMap_init_$Create$, VOID, [InternalMap]);
 initMetadataForClass(LinkedHashMap, 'LinkedHashMap', LinkedHashMap_init_$Create$, HashMap, [KtMap]);
-initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [KtSet, Collection]);
+initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [Collection, KtSet]);
 initMetadataForInterface(Continuation, 'Continuation');
 initMetadataForClass(InterceptedCoroutine, 'InterceptedCoroutine', VOID, VOID, [Continuation]);
 initMetadataForClass(CoroutineImpl, 'CoroutineImpl', VOID, InterceptedCoroutine, [Continuation]);
@@ -49559,6 +49559,11 @@ protoOf($checkAllCOROUTINE$).e5 = function () {
           this.w4_1 = 2;
           continue $sm;
         case 2:
+          info('Checking README.adoc');
+          if (kodein_github_actions_version_check_exists('README.adoc'))
+            this.dl_1.p1(checkReadme(readText('README.adoc'), this.cl_1));
+          else
+            this.dl_1.g(new Problem('README.adoc does not exist.', 'README.adoc'));
           if (kodein_github_actions_version_check_exists('doc/antora.yml')) {
             info('Checking doc/antora.yml');
             var catalogPath = versionCatalogPath(this.al_1);
@@ -49649,6 +49654,45 @@ function initScriptPath(path) {
 }
 function versionCatalogPath(path) {
   return pathIn(path, 'gradle/libs.versions.toml');
+}
+function get_versionAttributeRegex() {
+  _init_properties_Readme_kt__4czxma();
+  return versionAttributeRegex;
+}
+var versionAttributeRegex;
+function checkReadme(text, version) {
+  _init_properties_Readme_kt__4czxma();
+  var tmp0_elvis_lhs = get_versionAttributeRegex().y7(text);
+  var tmp;
+  if (tmp0_elvis_lhs == null) {
+    return listOf(new Problem('README.adoc must have a ":version:" attribute.', 'README.adoc'));
+  } else {
+    tmp = tmp0_elvis_lhs;
+  }
+  var match = tmp;
+  var actual = match.p8().o(1);
+  if (version == null || actual === version)
+    return emptyList();
+  // Inline function 'kotlin.text.count' call
+  var count = 0;
+  var indexedObject = substring(text, 0, match.o8().la_1);
+  var inductionVariable = 0;
+  while (inductionVariable < charSequenceLength(indexedObject)) {
+    var element = charSequenceGet(indexedObject, inductionVariable);
+    inductionVariable = inductionVariable + 1 | 0;
+    if (element === _Char___init__impl__6a9atx(10)) {
+      count = count + 1 | 0;
+    }
+  }
+  var line = count + 1 | 0;
+  return listOf(new Problem('The "version" attribute is "' + actual + '" in README.adoc, but it must be "' + version + '" for this release.', 'README.adoc', line));
+}
+var properties_initialized_Readme_kt_hxvc40;
+function _init_properties_Readme_kt__4czxma() {
+  if (!properties_initialized_Readme_kt_hxvc40) {
+    properties_initialized_Readme_kt_hxvc40 = true;
+    versionAttributeRegex = Regex_init_$Create$('^:version:[ \\t]*(.*?)[ \\t]*$', RegexOption_MULTILINE_getInstance());
+  }
 }
 function get_releaseNameRegex() {
   _init_properties_ReleaseName_kt__327log();

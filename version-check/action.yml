@@ -1,5 +1,5 @@
 name: Version check
-description: Checks that the release name, its tag, the Gradle version and the Antora documentation versions agree.
+description: Checks that the release name, its tag, the Gradle version, the README.adoc version and the Antora documentation versions agree.
 inputs:
   release-name:
     description: 'Name of the release being created, e.g. 3.5.2'
