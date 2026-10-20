@@ -18,6 +18,6 @@ private fun checkAttribute(text: String, name: String, expected: String?): List<
  */
 internal fun checkReadme(text: String, version: String?): List<Problem> = buildList {
     addAll(checkAttribute(text, "version", version))
-    addAll(checkAttribute(text, "version-branch", version?.let { "v${displayVersionOf(it)}" }))
+    addAll(checkAttribute(text, "version-branch", version?.let { "v${shortVersionOf(it)}" }))
     addAll(checkAttribute(text, "version-tag", version?.let { "v$it" }))
 }

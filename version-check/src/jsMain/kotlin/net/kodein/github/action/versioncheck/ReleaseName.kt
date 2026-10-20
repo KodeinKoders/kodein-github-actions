@@ -13,7 +13,7 @@ internal fun checkReleaseName(releaseName: String): List<Problem> =
     else listOf(Problem("Release name \"$releaseName\" must be \"{Major}.{Minor}.{Patch}\", optionally followed by \"-{Tag}\"."))
 
 /** The version without its patch: `3.5.2` -> `3.5`, and `3.5.2-RC1` -> `3.5`. */
-internal fun displayVersionOf(version: String): String = version.split('.').take(2).joinToString(".")
+internal fun shortVersionOf(version: String): String = version.split('.').take(2).joinToString(".")
 
 /** The tag of a release is its name prefixed by `v`: release `3.5.2` is tagged `v3.5.2`. */
 internal fun checkTagName(tagName: String, releaseName: String): List<Problem> =

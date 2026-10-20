@@ -46,8 +46,8 @@ It fails the job, with one annotation per problem, unless:
 ** `version-branch` is the name of the release's branch, `v\{Major}.\{Minor}`, such as `v3.5`;
 ** `version-tag` is the name of the release's tag, `v` followed by the version, such as `v3.5.2`;
 * when `doc/antora.yml` exists:
-** `version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
-** `display_version` is that version without its patch and tag, `\{Major}.\{Minor}`, and is quoted so that YAML does not read `3.10` as the number `3.1`;
+** `version` is the release's version without its patch and tag, `\{Major}.\{Minor}`, and is quoted so that YAML does not read `3.10` as the number `3.1`;
+** `display_version` is the release's version, `\{Major}.\{Minor}.\{Patch}` followed by `-\{Tag}` for a pre-release;
 ** the `version` attribute of `asciidoc.attributes` is the release's version;
 ** each `XXX-version` attribute of `asciidoc.attributes` equals the `XXX` version of the `gradle/libs.versions.toml` version catalog.
 

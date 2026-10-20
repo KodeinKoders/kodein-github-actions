@@ -11,8 +11,8 @@ class AntoraTest {
 
     private val versions = """
         name: my-lib
-        version: 3.5.2
-        display_version: '3.5'
+        version: '3.5'
+        display_version: 3.5.2
     """.trimIndent()
 
     @Test
@@ -31,8 +31,8 @@ class AntoraTest {
     @Test
     fun preRelease() {
         assertEquals(emptyList(), checkAntora("""
-            version: 3.5.2-RC1
-            display_version: '3.5'
+            version: '3.5'
+            display_version: 3.5.2-RC1
             asciidoc:
               attributes:
                 version: 3.5.2-RC1
@@ -57,8 +57,8 @@ class AntoraTest {
     @Test
     fun wrongVersions() {
         val problems = checkAntora("""
-            version: 3.5.1
-            display_version: '3.6'
+            version: '3.6'
+            display_version: 3.5.1
             asciidoc:
               attributes:
                 version: 3.4.2
@@ -66,8 +66,8 @@ class AntoraTest {
         assertEquals(listOf(1, 2, 5), problems.map { it.line })
         assertEquals(
             listOf(
-                "\"version\" is \"3.5.1\" in doc/antora.yml, but it must be \"3.5.2\" for this release.",
-                "\"display_version\" is \"3.6\" in doc/antora.yml, but it must be \"3.5\" for this release.",
+                "\"version\" is \"3.6\" in doc/antora.yml, but it must be \"3.5\" for this release.",
+                "\"display_version\" is \"3.5.1\" in doc/antora.yml, but it must be \"3.5.2\" for this release.",
                 "\"asciidoc.attributes.version\" is \"3.4.2\" in doc/antora.yml, but it must be \"3.5.2\" for this release.",
             ),
             problems.map { it.message },
@@ -75,11 +75,11 @@ class AntoraTest {
     }
 
     @Test
-    fun displayVersionMustBeQuoted() {
+    fun versionMustBeQuoted() {
         // Unquoted, 3.10 is the number 3.1.
-        val problems = checkAntora("version: 3.10.2\ndisplay_version: 3.10\nasciidoc:\n  attributes:\n    version: 3.10.2\n", catalog, "3.10.2")
+        val problems = checkAntora("version: 3.10\ndisplay_version: 3.10.2\nasciidoc:\n  attributes:\n    version: 3.10.2\n", catalog, "3.10.2")
         assertEquals(1, problems.size)
-        assertEquals(2, problems.single().line)
+        assertEquals(1, problems.single().line)
         assertTrue("quoted string" in problems.single().message)
     }
 

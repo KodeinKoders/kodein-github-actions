@@ -36,9 +36,9 @@ internal fun checkAntora(text: String, catalog: Map<String, String?>, version: S
     }
 
     return buildList {
-        val displayVersion = version?.let { displayVersionOf(it) }
-        addAll(checkVersionProperty("version", root.version, version, lineOf(text, Regex("^version\\s*:", RegexOption.MULTILINE))))
-        addAll(checkVersionProperty("display_version", root.display_version, displayVersion, lineOf(text, Regex("^display_version\\s*:", RegexOption.MULTILINE))))
+        val shortVersion = version?.let { shortVersionOf(it) }
+        addAll(checkVersionProperty("version", root.version, shortVersion, lineOf(text, Regex("^version\\s*:", RegexOption.MULTILINE))))
+        addAll(checkVersionProperty("display_version", root.display_version, version, lineOf(text, Regex("^display_version\\s*:", RegexOption.MULTILINE))))
 
         val attributes: dynamic = root.asciidoc?.attributes
         val attributesObject = attributes != null && jsTypeOf(attributes) == "object"

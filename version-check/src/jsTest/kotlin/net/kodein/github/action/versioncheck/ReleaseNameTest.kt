@@ -15,10 +15,10 @@ class ReleaseNameTest {
     }
 
     @Test
-    fun displayVersion() {
-        assertEquals("3.5", displayVersionOf("3.5.2"))
-        assertEquals("3.5", displayVersionOf("3.5.2-RC1"))
-        assertEquals("0.10", displayVersionOf("0.10.0-beta.2"))
+    fun shortVersion() {
+        assertEquals("3.5", shortVersionOf("3.5.2"))
+        assertEquals("3.5", shortVersionOf("3.5.2-RC1"))
+        assertEquals("0.10", shortVersionOf("0.10.0-beta.2"))
     }
 
     @Test

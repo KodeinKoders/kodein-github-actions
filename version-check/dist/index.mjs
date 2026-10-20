@@ -40133,13 +40133,13 @@ initMetadataForClass(IteratorImpl, 'IteratorImpl');
 initMetadataForClass(AbstractMutableList, 'AbstractMutableList', VOID, AbstractMutableCollection, [Collection, KtList]);
 initMetadataForClass(AbstractMap, 'AbstractMap', VOID, VOID, [KtMap]);
 initMetadataForClass(AbstractMutableMap, 'AbstractMutableMap', VOID, AbstractMap, [KtMap]);
-initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [KtSet, Collection]);
+initMetadataForClass(AbstractMutableSet, 'AbstractMutableSet', VOID, AbstractMutableCollection, [Collection, KtSet]);
 initMetadataForCompanion(Companion_1);
 initMetadataForClass(ArrayList, 'ArrayList', ArrayList_init_$Create$, AbstractMutableList, [Collection, KtList]);
 initMetadataForClass(HashMap, 'HashMap', HashMap_init_$Create$, AbstractMutableMap, [KtMap]);
-initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [KtSet, Collection]);
+initMetadataForClass(HashMapEntrySetBase, 'HashMapEntrySetBase', VOID, AbstractMutableSet, [Collection, KtSet]);
 initMetadataForClass(HashMapEntrySet, 'HashMapEntrySet', VOID, HashMapEntrySetBase);
-initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [KtSet, Collection]);
+initMetadataForClass(HashSet, 'HashSet', HashSet_init_$Create$, AbstractMutableSet, [Collection, KtSet]);
 initMetadataForCompanion(Companion_2);
 initMetadataForClass(Itr, 'Itr');
 initMetadataForClass(KeysItr, 'KeysItr', VOID, Itr);
@@ -40183,7 +40183,7 @@ function containsAllEntries(m) {
 initMetadataForInterface(InternalMap, 'InternalMap');
 initMetadataForClass(InternalHashMap, 'InternalHashMap', InternalHashMap_init_$Create$, VOID, [InternalMap]);
 initMetadataForClass(LinkedHashMap, 'LinkedHashMap', LinkedHashMap_init_$Create$, HashMap, [KtMap]);
-initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [KtSet, Collection]);
+initMetadataForClass(LinkedHashSet, 'LinkedHashSet', LinkedHashSet_init_$Create$, HashSet, [Collection, KtSet]);
 initMetadataForInterface(Continuation, 'Continuation');
 initMetadataForClass(InterceptedCoroutine, 'InterceptedCoroutine', VOID, VOID, [Continuation]);
 initMetadataForClass(CoroutineImpl, 'CoroutineImpl', VOID, InterceptedCoroutine, [Continuation]);
@@ -49288,11 +49288,11 @@ function checkAntora(text, catalog, version, catalogPath) {
       tmp_1 = null;
     } else {
       // Inline function 'kotlin.let' call
-      tmp_1 = displayVersionOf(version);
+      tmp_1 = shortVersionOf(version);
     }
-    var displayVersion = tmp_1;
-    this_0.p1(checkVersionProperty('version', root.version, version, lineOf(text, Regex_init_$Create$('^version\\s*:', RegexOption_MULTILINE_getInstance()))));
-    this_0.p1(checkVersionProperty('display_version', root.display_version, displayVersion, lineOf(text, Regex_init_$Create$('^display_version\\s*:', RegexOption_MULTILINE_getInstance()))));
+    var shortVersion = tmp_1;
+    this_0.p1(checkVersionProperty('version', root.version, shortVersion, lineOf(text, Regex_init_$Create$('^version\\s*:', RegexOption_MULTILINE_getInstance()))));
+    this_0.p1(checkVersionProperty('display_version', root.display_version, version, lineOf(text, Regex_init_$Create$('^display_version\\s*:', RegexOption_MULTILINE_getInstance()))));
     var tmp1_safe_receiver = root.asciidoc;
     var attributes = tmp1_safe_receiver == null ? null : tmp1_safe_receiver.attributes;
     var attributesObject = attributes != null && typeof attributes === 'object';
@@ -49692,7 +49692,7 @@ function checkReadme(text, version) {
     tmp = null;
   } else {
     // Inline function 'kotlin.let' call
-    tmp = 'v' + displayVersionOf(version);
+    tmp = 'v' + shortVersionOf(version);
   }
   this_0.p1(checkAttribute(text, 'version-branch', tmp));
   var tmp_0;
@@ -49720,7 +49720,7 @@ function checkReleaseName(releaseName) {
   _init_properties_ReleaseName_kt__327log();
   return !(parseReleaseVersion(releaseName) == null) ? emptyList() : listOf(new Problem('Release name "' + releaseName + '" must be "{Major}.{Minor}.{Patch}", optionally followed by "-{Tag}".'));
 }
-function displayVersionOf(version) {
+function shortVersionOf(version) {
   _init_properties_ReleaseName_kt__327log();
   return joinToString_0(take(split(version, charArrayOf([_Char___init__impl__6a9atx(46)])), 2), '.');
 }
