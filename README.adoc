@@ -3,7 +3,7 @@
 :toclevels: 2
 :idprefix:
 :source-highlighter: highlight.js
-:version-branch: v0.3
+:version-branch: v0.4
 
 *GitHub Actions for Kodein projects, written in Kotlin/JS.*
 
